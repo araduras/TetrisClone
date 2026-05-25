@@ -43,10 +43,10 @@ public enum Tetromino {
     ),
     I_SHAPE(new int[][]
             {
-                    {0, 0, 1, 0},
-                    {0, 0, 1, 0},
-                    {0, 0, 1, 0},
-                    {0, 0, 1, 0}
+                    {0, 1, 0, 0},
+                    {0, 1, 0, 0},
+                    {0, 1, 0, 0},
+                    {0, 1, 0, 0}
             }, "X"
     ),
     EMPTY(new int[][]{
@@ -66,4 +66,8 @@ public enum Tetromino {
     public String getTetrominoSymbol() {
         return this.symbol;
     }
+    public int[][] getShapeMatrix() {
+        return this.shapeMatrix;
+    }
+
 }
