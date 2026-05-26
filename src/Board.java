@@ -5,24 +5,19 @@ public class Board {
     static final int BOARD_X_SIZE = 10;
     static final int STARTY = 0;
     static final int STARTX = 4;
-    int currentY;
-    int currentX;
+    private int currentY;
+    private int currentX;
     Tetromino currentPiece;
 
     static final Tetromino [][] board =
             new Tetromino[BOARD_Y_SIZE][BOARD_X_SIZE];
     Board(){
         boardInit();
-        selectCurrentPieceRandomly();
-        currentY = STARTY;
-        currentX = STARTX;
-
-
-
+        newPieceSpawner();
 
     }
 
-    public Tetromino boardElementGetter(int y, int x){
+    public Tetromino getBoardElement(int y, int x){
         return board[y][x];
     }
     public void boardElementSetter(int y, int x, Tetromino tetr){
@@ -65,7 +60,7 @@ public class Board {
                     }
 
                 }else{
-                    System.out.print(boardElementGetter(i,j).getTetrominoSymbol()+ " ");
+                    System.out.print(getBoardElement(i,j).getTetrominoSymbol()+ " ");
 
             }}
             System.out.println();
@@ -78,4 +73,93 @@ public class Board {
     }
 
 
+    public record currentPieceYX(int Y, int X){}
+    public currentPieceYX getCurrentPieceYX(){
+        return new currentPieceYX(currentY,currentX);
+    }
+    /*/
+
+
+    public void incrementCurrentPieceY(currentPieceYX Y_X){
+        currentY = Y_X.Y();
+        currentX = Y_X.X();
+    }
+     */
+
+    /**
+    For downward movement
+    @param Y Increment Y value
+     */
+    public void incrementCurrentPieceY(int Y){
+        currentY+=Y;
+    }
+    public void incrementCurrentPieceX(int X){
+        currentX+=X;
+    }
+
+    public void movePieceDown(){
+        if (pieceReachedBottomOrOtherPiece()){
+            incrementCurrentPieceY(1);
+        }
+        else {
+            lockPieceToBoard();
+            newPieceSpawner();
+        }
+    }
+
+    //TODO: Left movement
+    public boolean pieceCanBeMovedLeft(){
+        int [][] currentPieceMatrix = currentPiece.getShapeMatrix();
+        for (int i = 0; i < currentPieceMatrix.length; i++) {
+            if(!getBoardElement(currentY+i,currentX-1).name().equals("EMPTY")
+                    &&currentPieceMatrix[i][0] != 0){
+                return false;
+            }
+
+        }
+        return true;
+    }
+    public void movePieceLeft(){
+        if (pieceReachedBottomOrOtherPiece()
+                &&pieceCanBeMovedLeft()){
+            incrementCurrentPieceX(1);
+        }
+    }
+
+    private boolean pieceReachedBottomOrOtherPiece() {
+        int [][] currentPieceMatrix = currentPiece.getShapeMatrix();
+        int matrixSize = currentPieceMatrix.length;
+        for (int i = 0; i < matrixSize; i++) {
+            for (int j = 0; j < currentPieceMatrix[0].length; j++) {
+                if (currentPieceMatrix[i][j] == 1){
+                    if(currentY+i >= BOARD_Y_SIZE-1
+                            || !getBoardElement(currentY+i+1 , currentX+j).name().equals("EMPTY")
+                            ){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+
+
+    }
+
+    private void lockPieceToBoard(){
+        int [][] currentPieceShapeMatrix = currentPiece.getShapeMatrix();
+        for (int i = 0; i < currentPieceShapeMatrix.length; i++) {
+            for (int j = 0; j < currentPieceShapeMatrix[0].length; j++) {
+                if (currentPieceShapeMatrix[i][j] == 1){
+
+                    boardElementSetter(currentY+i, currentX+j,currentPiece);
+                }
+            }
+        }
+
+    }
+    private void newPieceSpawner(){
+        selectCurrentPieceRandomly();
+        currentY = STARTY;
+        currentX = STARTX;
+    }
 }
