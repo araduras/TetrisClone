@@ -1,11 +1,13 @@
 
 
-public class Tetris {
+public class Tetris  {
 
 public static void main(String[] args) {
         Board board = new Board();
+
         try{
             while(true){
+
             board.movePieceDown();
             board.printBoardOnConsole();
             System.out.println();

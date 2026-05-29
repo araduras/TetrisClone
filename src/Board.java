@@ -31,13 +31,11 @@ public class Board {
             }
         }
     }
-    //prints rows by columns
-    // 1  2  3
-    //x1 y1 z1
-    //x2 y2 z2
-    //x3 y3 z3
+
 
     public void printBoardOnConsole(){
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
         for (int i = 0; i < BOARD_Y_SIZE; i++) {
             for (int j = 0; j < BOARD_X_SIZE; j++) {
                 int isPointerOnCurrentPiece_Y= i - currentY;
