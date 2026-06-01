@@ -1,16 +1,16 @@
 import java.util.Random;
 
 public class Board {
-    static final int BOARD_Y_SIZE = 10;
+    static final int BOARD_Y_SIZE = 20;
     static final int BOARD_X_SIZE = 10;
     static final int STARTY = 0;
     static final int STARTX = 4;
-    private int currentY;
-    private int currentX;
+    public int currentY;
+    public int currentX;
     Tetromino currentPiece;
     int [][] currentPieceMatrix;
 
-    static final Tetromino [][] board =
+     final Tetromino [][] board =
             new Tetromino[BOARD_Y_SIZE][BOARD_X_SIZE];
     Board(){
         boardInit();
@@ -24,7 +24,7 @@ public class Board {
     public void setBoardElement(int y, int x, Tetromino tetr){
          board[y][x] = tetr;
     }
-    private static void boardInit(){
+    public void boardInit(){
         for (int y = 0; y < board.length; y++) {
             for (int x = 0; x < board[y].length; x++) {
                 board[y][x] = Tetromino.EMPTY;
@@ -34,8 +34,7 @@ public class Board {
 
 
     public void printBoardOnConsole(){
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
+
         for (int i = 0; i < BOARD_Y_SIZE; i++) {
             for (int j = 0; j < BOARD_X_SIZE; j++) {
                 int isPointerOnCurrentPiece_Y= i - currentY;
@@ -48,7 +47,7 @@ public class Board {
 
                 )
                 {
-                    // 0 or 1
+
                     int currentPieceMatrixCurrentElement =
                             currentPieceMatrix[isPointerOnCurrentPiece_Y][isPointerOnCurrentPiece_X];
                     if (currentPieceMatrixCurrentElement == 1) {
@@ -68,7 +67,10 @@ public class Board {
     private void selectCurrentPieceRandomly(){
         Random rnd = new Random();
         Tetromino[] randomPiece = Tetromino.values();
-        currentPiece = randomPiece[rnd.nextInt(1,randomPiece.length)-1];
+        //currentPiece = randomPiece[rnd.nextInt(1,randomPiece.length-1)];
+        Tetromino[] pieces = Tetromino.values();
+        currentPiece = pieces[rnd.nextInt(pieces.length - 1)];
+
         currentPieceMatrix = currentPiece.getShapeMatrix();
 
     }
