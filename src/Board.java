@@ -8,23 +8,26 @@ public class Board {
     public int currentY;
     public int currentX;
     Tetromino currentPiece;
-    int [][] currentPieceMatrix;
+    int[][] currentPieceMatrix;
 
-     final Tetromino [][] board =
+    final Tetromino[][] board =
             new Tetromino[BOARD_Y_SIZE][BOARD_X_SIZE];
-    Board(){
+
+    Board() {
         boardInit();
         newPieceSpawner();
 
     }
 
-    public Tetromino getBoardElement(int y, int x){
+    public Tetromino getBoardElement(int y, int x) {
         return board[y][x];
     }
-    public void setBoardElement(int y, int x, Tetromino tetr){
-         board[y][x] = tetr;
+
+    public void setBoardElement(int y, int x, Tetromino tetr) {
+        board[y][x] = tetr;
     }
-    public void boardInit(){
+
+    public void boardInit() {
         for (int y = 0; y < board.length; y++) {
             for (int x = 0; x < board[y].length; x++) {
                 board[y][x] = Tetromino.EMPTY;
@@ -33,41 +36,40 @@ public class Board {
     }
 
 
-    public void printBoardOnConsole(){
+    public void printBoardOnConsole() {
 
         for (int i = 0; i < BOARD_Y_SIZE; i++) {
             for (int j = 0; j < BOARD_X_SIZE; j++) {
-                int isPointerOnCurrentPiece_Y= i - currentY;
-                int isPointerOnCurrentPiece_X= j - currentX;
+                int isPointerOnCurrentPiece_Y = i - currentY;
+                int isPointerOnCurrentPiece_X = j - currentX;
                 int currentPieceMatrixHeight = currentPieceMatrix.length;
                 int currentPieceMatrixWidth = currentPieceMatrix[0].length;
                 if (
-                        (isPointerOnCurrentPiece_Y>=0 && isPointerOnCurrentPiece_Y<currentPieceMatrixHeight)
-                    &&  (isPointerOnCurrentPiece_X>=0 && isPointerOnCurrentPiece_X<currentPieceMatrixWidth)
+                        (isPointerOnCurrentPiece_Y >= 0 && isPointerOnCurrentPiece_Y < currentPieceMatrixHeight)
+                                && (isPointerOnCurrentPiece_X >= 0 && isPointerOnCurrentPiece_X < currentPieceMatrixWidth)
 
-                )
-                {
+                ) {
 
                     int currentPieceMatrixCurrentElement =
                             currentPieceMatrix[isPointerOnCurrentPiece_Y][isPointerOnCurrentPiece_X];
                     if (currentPieceMatrixCurrentElement == 1) {
-                        System.out.print("X"+" ");
-                    }
-                    else if ( currentPieceMatrixCurrentElement == 0){
+                        System.out.print("X" + " ");
+                    } else if (currentPieceMatrixCurrentElement == 0) {
                         System.out.print(". ");
                     }
 
-                }else{
-                    System.out.print(getBoardElement(i,j).getTetrominoSymbol()+ " ");
+                } else {
+                    System.out.print(getBoardElement(i, j).getTetrominoSymbol() + " ");
 
-            }}
+                }
+            }
             System.out.println();
         }
     }
-    private void selectCurrentPieceRandomly(){
+
+    private void selectCurrentPieceRandomly() {
         Random rnd = new Random();
         Tetromino[] randomPiece = Tetromino.values();
-        //currentPiece = randomPiece[rnd.nextInt(1,randomPiece.length-1)];
         Tetromino[] pieces = Tetromino.values();
         currentPiece = pieces[rnd.nextInt(pieces.length - 1)];
 
@@ -76,61 +78,49 @@ public class Board {
     }
 
 
-    public record currentPieceYX(int Y, int X){}
-    public currentPieceYX getCurrentPieceYX(){
-        return new currentPieceYX(currentY,currentX);
+    public record currentPieceYX(int Y, int X) {
     }
 
+    public currentPieceYX getCurrentPieceYX() {
+        return new currentPieceYX(currentY, currentX);
+    }
+
+    public void setCurrentPieceMatrix(int[][] currentPieceMatrix) {
+        this.currentPieceMatrix = currentPieceMatrix;
+    }
 
     /**
-    For downward movement
-    @param Y Increment Y value
+     * For downward movement
+     *
+     * @param Y Increment Y value
      */
-    public void changeCurrentPieceY(int Y){
-        currentY+=Y;
-    }
-    public void changeCurrentPieceX(int X){
-        currentX+=X;
+    public void changeCurrentPieceY(int Y) {
+        currentY += Y;
     }
 
-    public void movePieceDown(){
-        if (!pieceReachedBottomOrOtherPiece()){
+    public void changeCurrentPieceX(int X) {
+        currentX += X;
+    }
+
+    public void movePieceDown() {
+        if (!pieceReachedBottomOrOtherPiece()) {
             changeCurrentPieceY(1);
-        }
-        else {
+        } else {
             lockPieceToBoard();
             newPieceSpawner();
         }
     }
 
 
-    public boolean pieceCanBeMovedLeft(){
+    private boolean pieceCanBeMovedLeft() {
         for (int i = 0; i < currentPieceMatrix.length; i++) {
             for (int j = 0; j < currentPieceMatrix[0].length; j++) {
-                if (currentPieceMatrix[i][j] == 1){
+                if (currentPieceMatrix[i][j] == 1) {
                     int targetX = currentX + j - 1;
-                    if (targetX == -1){
+                    if (targetX == -1) {
                         return false;
                     }
-                    if (!getBoardElement(currentY+i,targetX).name().equals("EMPTY")){
-                        return false;
-                    }
-                }
-                }
-            }
-        return true;
-        }
-
-
-    public boolean pieceCanBeMovedRight(){
-        for (int i = 0; i < currentPieceMatrix.length; i++) {
-            for (int j = 0; j < currentPieceMatrix[0].length; j++) {
-                if (currentPieceMatrix[i][j] == 1){
-                    int targetX = currentX + j + 1;
-                    if (targetX == BOARD_X_SIZE){
-                        return false;
-                    }
-                    if (!getBoardElement(currentY+i,targetX).name().equals("EMPTY")){
+                    if (!getBoardElement(currentY + i, targetX).name().equals("EMPTY")) {
                         return false;
                     }
                 }
@@ -140,29 +130,101 @@ public class Board {
     }
 
 
+    private boolean pieceCanBeMovedRight() {
+        for (int i = 0; i < currentPieceMatrix.length; i++) {
+            for (int j = 0; j < currentPieceMatrix[0].length; j++) {
+                if (currentPieceMatrix[i][j] == 1) {
+                    int targetX = currentX + j + 1;
+                    if (targetX == BOARD_X_SIZE) {
+                        return false;
+                    }
+                    if (!getBoardElement(currentY + i, targetX).name().equals("EMPTY")) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 
-    public void movePieceLeft(){
+    private boolean pieceCanBeRotated(int[][] rotatedPiece) {
+
+        for (int i = 0; i < rotatedPiece.length; i++) {
+            for (int j = 0; j < rotatedPiece[0].length; j++) {
+                int targetCoordinateY = currentY + i;
+                int targetCoordinateX = currentX + j;
+                if ((
+                        rotatedPiece[i][j] == 1 &&
+                                (((targetCoordinateY == BOARD_Y_SIZE) || (targetCoordinateY  < 0))
+                                        || ((targetCoordinateX == BOARD_X_SIZE) || (targetCoordinateX  < 0)))
+                )) {
+                    return false;
+                }
+                if (rotatedPiece[i][j] == 1 &&
+                        !getBoardElement(currentY + i, currentX + j).name().equals("EMPTY")) {
+                    return false;
+                }
+
+            }
+        }
+
+        return true;
+    }
+
+    public void movePieceLeft() {
         if (!pieceReachedBottomOrOtherPiece()
-                &&pieceCanBeMovedLeft()){
+                && pieceCanBeMovedLeft()) {
             changeCurrentPieceX(-1);
         }
     }
-    public void movePieceRight(){
+
+    public void movePieceRight() {
         if (!pieceReachedBottomOrOtherPiece()
-                &&pieceCanBeMovedRight()){
+                && pieceCanBeMovedRight()) {
             changeCurrentPieceX(+1);
         }
     }
 
-    private boolean pieceReachedBottomOrOtherPiece() {
 
+    public void rotatePiece() {
+        int[][] rotatedPiece = new int[currentPieceMatrix[0].length][currentPieceMatrix.length];
+        for (int i = 0; i < currentPieceMatrix.length; i++) {
+            for (int j = 0; j < currentPieceMatrix[0].length; j++) {
+                rotatedPiece[j][i] = currentPieceMatrix[i][j];
+            }
+        }
+
+        for (int i = 0; i < rotatedPiece.length; i++) {
+            int left = 0;
+            int right = rotatedPiece[i].length - 1;
+
+            while (left < right) {
+
+                int temp = rotatedPiece[i][left];
+                rotatedPiece[i][left] = rotatedPiece[i][right];
+                rotatedPiece[i][right] = temp;
+
+
+                left++;
+                right--;
+            }
+        }
+
+        if (pieceCanBeRotated(rotatedPiece)) {
+
+            setCurrentPieceMatrix(rotatedPiece);
+        }
+    }
+
+
+    private boolean pieceReachedBottomOrOtherPiece() {
         int matrixSize = currentPieceMatrix.length;
         for (int i = 0; i < matrixSize; i++) {
             for (int j = 0; j < currentPieceMatrix[0].length; j++) {
-                if (currentPieceMatrix[i][j] == 1){
-                    if(currentY+i >= BOARD_Y_SIZE-1
-                            || !getBoardElement(currentY+i+1 , currentX+j).name().equals("EMPTY")
-                            ){
+                if (currentPieceMatrix[i][j] == 1) {
+                    if (currentY + i >= BOARD_Y_SIZE - 1
+                            || !getBoardElement(currentY + i + 1, currentX + j).name().equals("EMPTY")
+                    ) {
                         return true;
                     }
                 }
@@ -173,18 +235,19 @@ public class Board {
 
     }
 
-    private void lockPieceToBoard(){
+    private void lockPieceToBoard() {
         for (int i = 0; i < currentPieceMatrix.length; i++) {
             for (int j = 0; j < currentPieceMatrix[0].length; j++) {
-                if (currentPieceMatrix[i][j] == 1){
+                if (currentPieceMatrix[i][j] == 1) {
 
-                    setBoardElement(currentY+i, currentX+j,currentPiece);
+                    setBoardElement(currentY + i, currentX + j, currentPiece);
                 }
             }
         }
 
     }
-    private void newPieceSpawner(){
+
+    private void newPieceSpawner() {
         selectCurrentPieceRandomly();
         currentY = STARTY;
         currentX = STARTX;
