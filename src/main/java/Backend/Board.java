@@ -6,9 +6,9 @@ import java.util.Random;
 
 public class Board {
     public static final int BOARD_Y_SIZE = 20;
-    public  static final int BOARD_X_SIZE = 10;
-    public  static final int STARTY = 0;
-    public  static final int STARTX = 4;
+    public static final int BOARD_X_SIZE = 10;
+    public static final int STARTY = 0;
+    public static final int STARTX = 4;
     public int currentY;
     public int currentX;
     public Tetromino currentPiece;

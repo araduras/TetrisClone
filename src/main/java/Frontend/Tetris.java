@@ -2,6 +2,7 @@ package Frontend;
 import Backend.*;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -22,16 +23,22 @@ public class Tetris extends Application {
     BorderPane mainLayout;
     VBox pauseMenu;
     VBox settingsMenu;
-    VBox leftColumn;
-    VBox rightColumn;
+
+    static VBox leftColumn;
+    static VBox rightColumn;
     public static Board board;
     public static StackPane gameStackPane;
     public static StackPane pauseMenuStackPane;
     private static Rectangle[][] gridCells;
     public static AnimationTimer animationTimer;
 
+    public static final VBox holdPieceBox = new VBox(30);
+    public static final VBox nextPieceBox = new VBox(30);
+    public static final VBox scoreBox = new VBox(30);
+
     public static Sounds gameMusic = new Sounds();
     private static final GridPane gridPane = new GridPane();
+    private static final StackPane firstLayerBackgroundStackPane = new StackPane();
 
     public static void main(String[] args) {
         launch(args);
@@ -40,9 +47,11 @@ public class Tetris extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         try {
-
+            firstLayerBackgroundStackPane.setStyle(Style.DEFAULT_GRAY_COLOR);
         gameSetup(primaryStage);
-        Scene scene = new Scene(mainLayout, 650, 650);
+        firstLayerBackgroundStackPane.getChildren().add(mainLayout);
+        Scene scene = new Scene(firstLayerBackgroundStackPane, 650, 650);
+
             primaryStage.setScene(scene);
             primaryStage.show();
             primaryStage.setFullScreen(true);
@@ -104,6 +113,7 @@ public class Tetris extends Application {
     }
 
     private void gameSetup(Stage primaryStage){
+
         board = new Board();
         gameStackPane = new StackPane();
         pauseMenuStackPane = new StackPane();
@@ -115,13 +125,14 @@ public class Tetris extends Application {
 
         pauseMenuStackPane.getChildren().addAll(pauseMenu,settingsMenu);
         pauseMenuStackPane.setVisible(false);
-        gameMusic.playMusic("Tetris 99");
+        gameMusic.playMusic(Sounds.DEFAULT_THEME);
 
         primaryStage.setFullScreenExitHint("");
         primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 
-
-        columnSetup();
+        boxLeftRightSetup();
+        leftColumnSetup();
+        rightColumnSetup();
         mainLayoutSetup(leftColumn,rightColumn);
         gridSetup();
 
@@ -133,30 +144,47 @@ public class Tetris extends Application {
         mainLayout.setCenter(gameStackPane);
         mainLayout.setLeft(leftColumn);
         mainLayout.setRight(rightColumn);
+        BorderPane.setMargin(leftColumn, new Insets(0,30,0,0));
+        BorderPane.setMargin(rightColumn, new Insets(0, 0, 0, 30));
+        mainLayout.setMaxWidth(680);
+        mainLayout.setPrefWidth(680);
     }
-    private void columnSetup() {
-        //Column stuff
-        int columWidth = 250;
 
+    private void leftColumnSetup() {
         //Left column
-        this.leftColumn = new VBox(10);
+        leftColumn = new VBox(10);
         leftColumn.setAlignment(Pos.TOP_LEFT);
-        leftColumn.setStyle(Style.COLOR_GRIDPANE);
-        leftColumn.setPadding(new javafx.geometry.Insets(20));
-        Label holdTitle = new Label("HOLD");
-        leftColumn.setMinWidth(columWidth);
-        holdTitle.setStyle(Style.LARGE_TEXT_STYLE);
-        leftColumn.getChildren().add(holdTitle);
+        leftColumn.setStyle(Style.DEFAULT_GRAY_COLOR);
+        leftColumn.setPadding(new Insets(20));
+        leftColumn.setPrefSize(Sizes.idealColumnWidth, Sizes.idealColumHeight);
+        leftColumn.setMaxSize(Sizes.idealColumnWidth, Sizes.idealColumHeight);
 
+        Label holdTitle = new Label("HOLD");
+        holdTitle.setStyle(Style.LARGE_TEXT_STYLE);
+        holdTitle.setAlignment(Pos.CENTER);
+
+        leftColumn.getChildren().addAll(holdTitle,holdPieceBox,scoreBox);
+    }
+
+    private void rightColumnSetup(){
         //Right column
-        this.rightColumn = new VBox(10);
+        rightColumn = new VBox(10);
         rightColumn.setAlignment(Pos.TOP_RIGHT);
-        rightColumn.setStyle(Style.COLOR_GRIDPANE);
-        rightColumn.setMinWidth(columWidth);
-        rightColumn.setPadding(new javafx.geometry.Insets(20));
-        Label asd = new Label("asd");
-        asd.setStyle(Style.LARGE_TEXT_STYLE);
-        rightColumn.getChildren().add(asd);
+        rightColumn.setStyle(Style.DEFAULT_GRAY_COLOR);
+        rightColumn.setPrefSize(Sizes.idealColumnWidth, Sizes.idealColumHeight);
+        rightColumn.setMaxSize(Sizes.idealColumnWidth, Sizes.idealColumHeight);
+        rightColumn.setPadding(new Insets(20));
+
+        Label label = new Label("Next");
+        label.setStyle(Style.LARGE_TEXT_STYLE);
+        label.setAlignment(Pos.CENTER);
+
+        rightColumn.getChildren().addAll(label, nextPieceBox);
+    }
+    private void boxLeftRightSetup(){
+        nextPieceBox.setMaxSize(1,1);
+        scoreBox.setMaxSize(1,1);
+        holdPieceBox.setMaxSize(1,1);
 
     }
     private void gridSetup(){
@@ -170,7 +198,9 @@ public class Tetris extends Application {
             }
         }
         gridPane.setAlignment(Pos.CENTER);
-        gridPane.setStyle(Style.COLOR_GRIDPANE);
+        gridPane.setStyle(Style.DEFAULT_GRAY_COLOR);
+
+
     }
     public static void refreshUI() {
         if (board == null || board.currentPieceMatrix == null) {
