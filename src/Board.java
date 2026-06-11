@@ -9,6 +9,7 @@ public class Board {
     public int currentX;
     Tetromino currentPiece;
     int[][] currentPieceMatrix;
+    int rowsCleared = 0;
 
     final Tetromino[][] board =
             new Tetromino[BOARD_Y_SIZE][BOARD_X_SIZE];
@@ -78,12 +79,6 @@ public class Board {
     }
 
 
-    public record currentPieceYX(int Y, int X) {
-    }
-
-    public currentPieceYX getCurrentPieceYX() {
-        return new currentPieceYX(currentY, currentX);
-    }
 
     public void setCurrentPieceMatrix(int[][] currentPieceMatrix) {
         this.currentPieceMatrix = currentPieceMatrix;
@@ -102,11 +97,58 @@ public class Board {
         currentX += X;
     }
 
+
+
+
+    private boolean isRowFull(int row) {
+        for (int i = 0; i < board[0].length; i++) {
+            if (getBoardElement(row, i).name().equals("EMPTY")){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isElementOnBoardEmpty(int y, int x){
+        return getBoardElement(y,x).name().equals("EMPTY") ? true : false;
+    }
+
+
+
+    public void rowClear(){
+        for (int i = board.length-1; i >=0 ; i--) {
+            if (isRowFull(i)){
+                for (int j = 0; j < board[0].length; j++) {
+                    setBoardElement(i,j, Tetromino.EMPTY);
+                }
+
+                for (int row = i; row >= 0; row++) {
+                    for (int j = 0; j < board[0].length; j++) {
+                        if (!getBoardElement(i-1,j).name().equals("EMPTY")){
+                            setBoardElement(i,j, getBoardElement(i-1,j));
+                            setBoardElement(i-1,j, Tetromino.EMPTY);
+                        }
+                    }
+
+
+                }
+
+
+                rowsCleared++;
+                i++;
+            }
+        }
+    }
+
+
+
     public void movePieceDown() {
         if (!pieceReachedBottomOrOtherPiece()) {
             changeCurrentPieceY(1);
         } else {
             lockPieceToBoard();
+            rowClear();
+
             newPieceSpawner();
         }
     }

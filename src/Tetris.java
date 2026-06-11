@@ -98,13 +98,13 @@ public class Tetris extends Application {
         for (int i = 0; i < board.BOARD_Y_SIZE; i++) {
             for (int j = 0; j < board.BOARD_X_SIZE; j++) {
                 if (!board.getBoardElement(i, j).name().equals("EMPTY")) {
-                    gridCells[i][j].setStyle("-fx-fill: red;");
+                    gridCells[i][j].setStyle("-fx-fill: red; -fx-stroke: #555555; -fx-stroke-width: 0.5;");
                 } else if (
                         (i - board.currentY >= 0 && i - board.currentY < currentPieceMatrixHeight)
                                 && (j - board.currentX >= 0 && j - board.currentX < currentPieceMatrixWidth)
-                                && (board.currentPiece.getShapeMatrix()[i - board.currentY][j - board.currentX] == 1)
+                                && (board.currentPieceMatrix[i - board.currentY][j - board.currentX] == 1)
                 ) {
-                    gridCells[i][j].setStyle("-fx-fill: red;");
+                    gridCells[i][j].setStyle("-fx-fill: red; -fx-stroke: #555555; -fx-stroke-width: 0.5;");
                 } else {
                     gridCells[i][j].setStyle("-fx-fill: #333333; -fx-stroke: #555555; -fx-stroke-width: 0.5;");
                 }
