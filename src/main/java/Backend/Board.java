@@ -14,6 +14,7 @@ public class Board {
     private int rotationState = 0;
     public int currentY;
     public int currentX;
+<<<<<<< HEAD
 <<<<<<< HEAD:src/Board.java
     Tetromino currentPiece;
     int[][] currentPieceMatrix;
@@ -23,11 +24,16 @@ public class Board {
     boolean isGameOver = false;
 >>>>>>> 880831d (Music and Style added)
 =======
+=======
+>>>>>>> 0f10ff661434b7e3c87cd03c5fdc6ce9fb3bf728
     public Tetromino currentPiece;
     public int[][] currentPieceMatrix;
     public boolean isGameOver = false;
     public boolean isFirstPieceOfTheGame = true;
+<<<<<<< HEAD
 >>>>>>> ee359ac (File structure revamp, music and sound effect settings added):src/main/java/Backend/Board.java
+=======
+>>>>>>> 0f10ff661434b7e3c87cd03c5fdc6ce9fb3bf728
 
     final Tetromino[][] board =
             new Tetromino[BOARD_Y_SIZE][BOARD_X_SIZE];

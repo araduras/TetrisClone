@@ -213,6 +213,7 @@ public class Tetris extends Application {
             for (int j = 0; j < Board.BOARD_X_SIZE; j++) {
                 if (!board.getBoardElement(i, j).name().equals("EMPTY")) {
 <<<<<<< HEAD
+<<<<<<< HEAD
                     gridCells[i][j].setStyle("-fx-fill: red; -fx-stroke: #555555; -fx-stroke-width: 0.5;");
 =======
                     //Locked on piece
@@ -237,6 +238,17 @@ public class Tetris extends Application {
                     //Active falling piece
                     gridCells[i][j].setStyle(board.currentPiece.getStyle());
 >>>>>>> 880831d (Music and Style added)
+=======
+                    //Locked on piece
+                    gridCells[i][j].setStyle(board.getBoardElement(i, j).getStyle());
+                } else if (
+                        (i - board.currentY >= 0 && i - board.currentY < currentPieceMatrixHeight)
+                                && (j - board.currentX >= 0 && j - board.currentX < currentPieceMatrixWidth)
+                                && (currentPieceMatrix[i - board.currentY][j - board.currentX] == 1)
+                ) {
+                    //Active falling piece
+                    gridCells[i][j].setStyle(board.currentPiece.getStyle());
+>>>>>>> 0f10ff661434b7e3c87cd03c5fdc6ce9fb3bf728
                 } else {
                     //Empty cells
                     gridCells[i][j].setStyle(Style.emptyGridCellStyle);
