@@ -1,14 +1,17 @@
+package Backend;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
 public class Board {
-    static final int BOARD_Y_SIZE = 20;
-    static final int BOARD_X_SIZE = 10;
-    static final int STARTY = 0;
-    static final int STARTX = 4;
+    public static final int BOARD_Y_SIZE = 20;
+    public  static final int BOARD_X_SIZE = 10;
+    public  static final int STARTY = 0;
+    public  static final int STARTX = 4;
     public int currentY;
     public int currentX;
+<<<<<<< HEAD:src/Board.java
     Tetromino currentPiece;
     int[][] currentPieceMatrix;
 <<<<<<< HEAD
@@ -16,11 +19,17 @@ public class Board {
 =======
     boolean isGameOver = false;
 >>>>>>> 880831d (Music and Style added)
+=======
+    public Tetromino currentPiece;
+    public int[][] currentPieceMatrix;
+    public boolean isGameOver = false;
+    public boolean isFirstPieceOfTheGame = true;
+>>>>>>> ee359ac (File structure revamp, music and sound effect settings added):src/main/java/Backend/Board.java
 
     final Tetromino[][] board =
             new Tetromino[BOARD_Y_SIZE][BOARD_X_SIZE];
 
-    Board() {
+    public Board() {
         boardInit();
         newPieceSpawner();
 
@@ -296,13 +305,10 @@ public class Board {
     }
 
     private void newPieceSpawner() {
-
         selectCurrentPieceRandomly();
-        currentY = STARTY;
-        currentX = STARTX;
-        isGameOver();
-
-
+            currentY = STARTY;
+            currentX = STARTX;
+            isGameOver();
     }
 
     private void isGameOver(){
@@ -315,5 +321,10 @@ public class Board {
             }
         }
 
+    }
+    public void boardClear(){
+        isFirstPieceOfTheGame = true;
+        boardInit();
+        newPieceSpawner();
     }
 }
