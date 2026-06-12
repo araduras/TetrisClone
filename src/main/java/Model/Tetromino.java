@@ -1,4 +1,6 @@
-package Backend;
+package Model;
+
+import View.Style;
 
 public enum Tetromino {
     BLOCK(new int[][][]

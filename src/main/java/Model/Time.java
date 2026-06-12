@@ -1,6 +1,7 @@
-package Backend;
+package Model;
 
-import static Frontend.Tetris.CURRENT_GAME_SPEED;
+import static Controller.GameController.CURRENT_GAME_SPEED;
+
 
 public class Time {
 

@@ -1,4 +1,4 @@
-package Backend;
+package Model;
 
 public class Sizes {
     public static final int idealColumnWidth = 500;

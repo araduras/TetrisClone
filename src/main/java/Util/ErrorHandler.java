@@ -1,4 +1,4 @@
-package Backend;
+package Util;
 
 public class ErrorHandler {
     public final String ERROR_MESSAGE_DEFAULT_ERROR = "Something went wrong :) ";

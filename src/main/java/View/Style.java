@@ -1,4 +1,4 @@
-package Backend;
+package View;
 
 public class Style {
     //Shapes

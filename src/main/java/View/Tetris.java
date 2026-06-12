@@ -1,12 +1,14 @@
-package Frontend;
-import Backend.*;
-import javafx.animation.AnimationTimer;
+package View;
+import Controller.GameController;
+import Controller.RefreshGameUI;
+import Model.Board;
+import Model.Sizes;
+import Util.Sounds;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -15,11 +17,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-public class Tetris extends Application {
-    public static boolean isPaused = false;
-    public static long CURRENT_GAME_SPEED = Time.DEFAULT_GAME_SPEED;
-    long lastUpdate = 0;
+import static Controller.GameController.animationTimer;
 
+public class Tetris extends Application implements RefreshGameUI {
+
+    GameController controller;
     BorderPane mainLayout;
     VBox pauseMenu;
     VBox settingsMenu;
@@ -30,25 +32,21 @@ public class Tetris extends Application {
     public static StackPane gameStackPane;
     public static StackPane pauseMenuStackPane;
     private static Rectangle[][] gridCells;
-    public static AnimationTimer animationTimer;
 
     public static final VBox holdPieceBox = new VBox(30);
     public static final VBox nextPieceBox = new VBox(30);
     public static final VBox scoreBox = new VBox(30);
-
-    public static Sounds gameMusic = new Sounds();
     private static final GridPane gridPane = new GridPane();
     private static final StackPane firstLayerBackgroundStackPane = new StackPane();
 
     public static void main(String[] args) {
         launch(args);
     }
-
     @Override
     public void start(Stage primaryStage) throws Exception {
         try {
             firstLayerBackgroundStackPane.setStyle(Style.DEFAULT_GRAY_COLOR);
-        gameSetup(primaryStage);
+            gameSetup(primaryStage);
         firstLayerBackgroundStackPane.getChildren().add(mainLayout);
         Scene scene = new Scene(firstLayerBackgroundStackPane, 650, 650);
 
@@ -57,55 +55,9 @@ public class Tetris extends Application {
             primaryStage.setFullScreen(true);
 
             scene.setOnKeyPressed(event -> {
-                if (event.getCode() == KeyCode.ESCAPE) {
-                    if (!isPaused){
-                        animationTimer.stop();
-                        isPaused = true;
-                        pauseMenuStackPane.setVisible(true);
-                        gameMusic.pauseMusic();
-                        pauseMenu.requestFocus();
-                    }
-                }
-                if (isPaused) {
-                    return;
-                }
-
-                //Keys
-                if (event.getCode() == KeyCode.LEFT) {
-                    board.DEFAULT_MOVE_PIECE_LEFT();
-                    refreshUI();
-                } else if (event.getCode() == KeyCode.RIGHT) {
-                    board.DEFAULT_MOVE_PIECE_RIGHT();
-                    refreshUI();
-                } else if (event.getCode() == KeyCode.DOWN) {
-                    board.movePieceDown();
-                    refreshUI();
-                }
-                else if(event.getCode() == KeyCode.UP){
-                    board.rotatePiece();
-                    refreshUI();
-                    gameMusic.playSoundEffect_Rotate();
-                }
-
+                controller.handleKeyPress(event);
             });
 
-
-            animationTimer = new AnimationTimer() {
-                @Override
-                public void handle(long now) {
-                    long timeSinceLastUpdate = now - lastUpdate;
-                    if (timeSinceLastUpdate >= CURRENT_GAME_SPEED) {
-                        board.movePieceDown();
-                        refreshUI();
-                        if (board.isGameOver) {
-                            this.stop();
-                        }
-                        lastUpdate = now;
-                    }
-                }
-            };
-
-            animationTimer.start();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,19 +65,18 @@ public class Tetris extends Application {
     }
 
     private void gameSetup(Stage primaryStage){
-
-        board = new Board();
         gameStackPane = new StackPane();
         pauseMenuStackPane = new StackPane();
         new PauseMenu();
         new SettingsMenu();
-
+        board = new Board();
+        controller = new GameController(board,this);
         this.pauseMenu = PauseMenu.pauseMenu;
         this.settingsMenu = SettingsMenu.settingsMenu;
 
         pauseMenuStackPane.getChildren().addAll(pauseMenu,settingsMenu);
         pauseMenuStackPane.setVisible(false);
-        gameMusic.playMusic(Sounds.DEFAULT_THEME);
+
 
         primaryStage.setFullScreenExitHint("");
         primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
@@ -149,7 +100,6 @@ public class Tetris extends Application {
         mainLayout.setMaxWidth(680);
         mainLayout.setPrefWidth(680);
     }
-
     private void leftColumnSetup() {
         //Left column
         leftColumn = new VBox(10);
@@ -165,7 +115,6 @@ public class Tetris extends Application {
 
         leftColumn.getChildren().addAll(holdTitle,holdPieceBox,scoreBox);
     }
-
     private void rightColumnSetup(){
         //Right column
         rightColumn = new VBox(10);
@@ -202,7 +151,8 @@ public class Tetris extends Application {
 
 
     }
-    public static void refreshUI() {
+
+    public void refreshUI() {
         if (board == null || board.currentPieceMatrix == null) {
             return;
         }

@@ -1,14 +1,15 @@
-package Frontend;
+package View;
 
-import Backend.Style;
+import Controller.GameController;
+import Controller.RefreshGameUI;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 
-import static Frontend.SettingsMenu.settingsMenu;
-import static Frontend.Tetris.gameMusic;
-import static Frontend.Tetris.gameStackPane;
+import static View.SettingsMenu.settingsMenu;
+import static View.Tetris.gameMusic;
+import static View.Tetris.gameStackPane;
 
 public class PauseMenu {
     public static final VBox pauseMenu = new VBox(10);
@@ -20,8 +21,8 @@ public class PauseMenu {
 
             pauseMenu.setOnKeyPressed(event -> {
                 if (event.getCode() == KeyCode.ESCAPE){
-                    Tetris.animationTimer.start();
-                    Tetris.isPaused = false;
+                    GameController.animationTimer.start();
+                    GameController.isPaused = false;
                     Tetris.pauseMenuStackPane.setVisible(false);
                     gameMusic.resumeMusic();
                     gameStackPane.requestFocus();
@@ -31,8 +32,8 @@ public class PauseMenu {
             //ResumeBtn
             Button resumeBtn = new Button("Resume");
             resumeBtn.setOnAction(event -> {
-                Tetris.animationTimer.start();
-                Tetris.isPaused = false;
+                GameController.animationTimer.start();
+                GameController.isPaused = false;
                 Tetris.pauseMenuStackPane.setVisible(false);
                 gameMusic.resumeMusic();
                 gameStackPane.requestFocus();

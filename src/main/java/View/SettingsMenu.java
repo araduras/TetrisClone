@@ -1,15 +1,14 @@
-package Frontend;
+package View;
 
-import Backend.Style;
-import Backend.Util;
+import Util.Util;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
-import static Frontend.PauseMenu.pauseMenu;
-import static Frontend.Tetris.gameMusic;
+import static View.PauseMenu.pauseMenu;
+import static View.Tetris.gameMusic;
 
 public class SettingsMenu {
     Slider musicVolumeSlider;

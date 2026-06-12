@@ -1,9 +1,11 @@
-package Backend;
+package Model;
 
-import Frontend.Tetris;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
+
+import static View.Tetris.gameMusic;
+
 
 public class Board {
     public static final int BOARD_Y_SIZE = 20;
@@ -117,6 +119,7 @@ public class Board {
     public void movePieceDown() {
         if (!pieceReachedBottomOrOtherPiece()) {
             changeCurrentPieceY(1);
+
         } else {
             lockPieceToBoard();
             rowClear();
@@ -187,6 +190,7 @@ public class Board {
         if (!pieceReachedBottomOrOtherPiece()
                 && pieceCanBeMovedLeft(currentPieceMatrix)) {
             changeCurrentPieceX(-1);
+
         }
     }
 
@@ -194,6 +198,7 @@ public class Board {
         if (!pieceReachedBottomOrOtherPiece()
                 && pieceCanBeMovedRight(currentPieceMatrix)) {
             changeCurrentPieceX(+1);
+
         }
     }
 
@@ -203,7 +208,8 @@ public class Board {
         {
             this.currentPieceMatrix = currentPiece.getShapeMatrix(nextState);
             rotationState = nextState;
-            Tetris.refreshUI();
+            gameMusic.playSoundEffect_Rotate();
+
             return;
         }
 
@@ -246,13 +252,13 @@ public class Board {
         currentX-=1;
         this.currentPieceMatrix = currentPiece.getShapeMatrix(nextState);
         rotationState = nextState;
-        Tetris.refreshUI();
+
     }
     private void rotatePieceWithRightShifting(int nextState){
         currentX+=1;
         this.currentPieceMatrix = currentPiece.getShapeMatrix(nextState);
         rotationState = nextState;
-        Tetris.refreshUI();
+
     }
     private boolean pieceCanBeRotatedWithRightShifting(int @NotNull [][] rotatedPiece){
         int rightShifting = 1;

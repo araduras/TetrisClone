@@ -1,4 +1,4 @@
-import Frontend.Tetris;
+import View.Tetris;
 
 public class Main {
 
