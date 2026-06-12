@@ -4,19 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1bed1f92-d3dc-493a-875f-cb9094130ac5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/Controller/GameController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/Tetris 99.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/vineboom.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Backend/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Backend/Board.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Backend/Sounds.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Backend/Sounds.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Backend/Tetromino.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Backend/Tetromino.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Frontend/Tetris.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Frontend/Tetris.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/Backend/Board.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Backend/Board.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/Backend/Sounds.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Backend/Sounds.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/Backend/Tetromino.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Backend/Tetromino.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/Frontend/Tetris.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Frontend/Tetris.class" afterDir="false" />
-    </list>
+    <list default="true" id="1bed1f92-d3dc-493a-875f-cb9094130ac5" name="Changes" comment="Rotation nearly solved, before MVC transformation" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -138,8 +126,25 @@
       <updated>1781264741574</updated>
       <workItem from="1781264743383" duration="350000" />
       <workItem from="1781265346277" duration="347000" />
-      <workItem from="1781265705084" duration="18972000" />
+      <workItem from="1781265705084" duration="19457000" />
     </task>
+    <task id="LOCAL-00001" summary="Rotation nearly solved, before MVC transformation">
+      <option name="closed" value="true" />
+      <created>1781294614567</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1781294614567</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Rotation nearly solved, before MVC transformation">
+      <option name="closed" value="true" />
+      <created>1781294624933</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1781294624933</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -155,5 +160,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Rotation nearly solved, before MVC transformation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Rotation nearly solved, before MVC transformation" />
   </component>
 </project>
