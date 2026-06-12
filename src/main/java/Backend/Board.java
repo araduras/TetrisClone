@@ -1,5 +1,6 @@
 package Backend;
 
+import Frontend.Tetris;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
@@ -9,6 +10,8 @@ public class Board {
     public static final int BOARD_X_SIZE = 10;
     public static final int STARTY = 0;
     public static final int STARTX = 4;
+    int rowsCleared = 0;
+    private int rotationState = 0;
     public int currentY;
     public int currentX;
 <<<<<<< HEAD:src/Board.java
@@ -52,44 +55,13 @@ public class Board {
     }
 
 
-    public void printBoardOnConsole() {
-
-        for (int i = 0; i < BOARD_Y_SIZE; i++) {
-            for (int j = 0; j < BOARD_X_SIZE; j++) {
-                int isPointerOnCurrentPiece_Y = i - currentY;
-                int isPointerOnCurrentPiece_X = j - currentX;
-                int currentPieceMatrixHeight = currentPieceMatrix.length;
-                int currentPieceMatrixWidth = currentPieceMatrix[0].length;
-                if (
-                        (isPointerOnCurrentPiece_Y >= 0 && isPointerOnCurrentPiece_Y < currentPieceMatrixHeight)
-                                && (isPointerOnCurrentPiece_X >= 0 && isPointerOnCurrentPiece_X < currentPieceMatrixWidth)
-
-                ) {
-
-                    int currentPieceMatrixCurrentElement =
-                            currentPieceMatrix[isPointerOnCurrentPiece_Y][isPointerOnCurrentPiece_X];
-                    if (currentPieceMatrixCurrentElement == 1) {
-                        System.out.print("X" + " ");
-                    } else if (currentPieceMatrixCurrentElement == 0) {
-                        System.out.print(". ");
-                    }
-
-                } else {
-                    System.out.print(getBoardElement(i, j).getTetrominoSymbol() + " ");
-
-                }
-            }
-            System.out.println();
-        }
-    }
-
     private void selectCurrentPieceRandomly() {
         Random rnd = new Random();
         Tetromino[] randomPiece = Tetromino.values();
         Tetromino[] pieces = Tetromino.values();
         currentPiece = pieces[rnd.nextInt(pieces.length - 1)];
 
-        currentPieceMatrix = currentPiece.getShapeMatrix();
+        currentPieceMatrix = currentPiece.getShapeMatrix(0);
 
     }
 
@@ -127,9 +99,6 @@ public class Board {
     private boolean isElementOnBoardEmpty(int y, int x){
         return getBoardElement(y,x).name().equals("EMPTY") ? true : false;
     }
-
-
-
     public void rowClear(){
         for (int i = board.length-1; i >=0 ; i--) {
             if (isRowFull(i)){
@@ -155,8 +124,6 @@ public class Board {
         }
     }
 
-
-
     public void movePieceDown() {
         if (!pieceReachedBottomOrOtherPiece()) {
             changeCurrentPieceY(1);
@@ -167,12 +134,10 @@ public class Board {
             newPieceSpawner();
         }
     }
-
-
-    private boolean pieceCanBeMovedLeft() {
-        for (int i = 0; i < currentPieceMatrix.length; i++) {
-            for (int j = 0; j < currentPieceMatrix[0].length; j++) {
-                if (currentPieceMatrix[i][j] == 1) {
+    private boolean pieceCanBeMovedLeft(int @NotNull [][] pieceToBeMovedLeft) {
+        for (int i = 0; i < pieceToBeMovedLeft.length; i++) {
+            for (int j = 0; j < pieceToBeMovedLeft[0].length; j++) {
+                if (pieceToBeMovedLeft[i][j] == 1) {
                     int targetX = currentX + j - 1;
                     if (targetX == -1) {
                         return false;
@@ -186,11 +151,10 @@ public class Board {
         return true;
     }
 
-
-    private boolean pieceCanBeMovedRight() {
-        for (int i = 0; i < currentPieceMatrix.length; i++) {
-            for (int j = 0; j < currentPieceMatrix[0].length; j++) {
-                if (currentPieceMatrix[i][j] == 1) {
+    private boolean pieceCanBeMovedRight(int @NotNull [][] pieceToBeMovedRight) {
+        for (int i = 0; i < pieceToBeMovedRight.length; i++) {
+            for (int j = 0; j < pieceToBeMovedRight[0].length; j++) {
+                if (pieceToBeMovedRight[i][j] == 1) {
                     int targetX = currentX + j + 1;
                     if (targetX == BOARD_X_SIZE) {
                         return false;
@@ -212,13 +176,14 @@ public class Board {
                 int targetCoordinateX = currentX + j;
                 if ((
                         rotatedPiece[i][j] == 1 &&
-                                (((targetCoordinateY == BOARD_Y_SIZE) || (targetCoordinateY  < 0))
-                                        || ((targetCoordinateX == BOARD_X_SIZE) || (targetCoordinateX  < 0)))
+                                (((targetCoordinateY >= BOARD_Y_SIZE) || (targetCoordinateY  < 0))
+                                        || ((targetCoordinateX >= BOARD_X_SIZE) || (targetCoordinateX  < 0)))
                 )) {
                     return false;
                 }
+
                 if (rotatedPiece[i][j] == 1 &&
-                        !getBoardElement(currentY + i, currentX + j).name().equals("EMPTY")) {
+                        !isElementOnBoardEmpty(targetCoordinateY,targetCoordinateX)) {
                     return false;
                 }
 
@@ -228,49 +193,100 @@ public class Board {
         return true;
     }
 
-    public void movePieceLeft() {
+    public void DEFAULT_MOVE_PIECE_LEFT() {
         if (!pieceReachedBottomOrOtherPiece()
-                && pieceCanBeMovedLeft()) {
+                && pieceCanBeMovedLeft(currentPieceMatrix)) {
             changeCurrentPieceX(-1);
         }
     }
 
-    public void movePieceRight() {
+    public void DEFAULT_MOVE_PIECE_RIGHT() {
         if (!pieceReachedBottomOrOtherPiece()
-                && pieceCanBeMovedRight()) {
+                && pieceCanBeMovedRight(currentPieceMatrix)) {
             changeCurrentPieceX(+1);
         }
     }
 
-
-    public void rotatePiece() {
-        int[][] rotatedPiece = new int[currentPieceMatrix[0].length][currentPieceMatrix.length];
-        for (int i = 0; i < currentPieceMatrix.length; i++) {
-            for (int j = 0; j < currentPieceMatrix[0].length; j++) {
-                rotatedPiece[j][i] = currentPieceMatrix[i][j];
-            }
+    public void rotatePiece(){
+        int nextState = (rotationState + 1)%4;
+        if(pieceCanBeRotated(currentPiece.getShapeMatrix(nextState)))
+        {
+            this.currentPieceMatrix = currentPiece.getShapeMatrix(nextState);
+            rotationState = nextState;
+            Tetris.refreshUI();
+            return;
         }
 
+        if (pieceCanBeMovedLeft(currentPiece.getShapeMatrix(nextState))
+                && pieceCanBeRotatedWithLeftShifting(currentPiece.getShapeMatrix(nextState))) {
+            rotatePieceWithLeftShifting(nextState);
+
+        } else if (pieceCanBeMovedRight(currentPiece.getShapeMatrix(nextState))
+                && pieceCanBeRotatedWithRightShifting(currentPiece.getShapeMatrix(nextState))) {
+            rotatePieceWithRightShifting(nextState);
+        }
+
+    }
+
+    private boolean pieceCanBeRotatedWithLeftShifting(int @NotNull [][] rotatedPiece){
+       int leftShifting = -1;
         for (int i = 0; i < rotatedPiece.length; i++) {
-            int left = 0;
-            int right = rotatedPiece[i].length - 1;
+            for (int j = 0; j < rotatedPiece[0].length; j++) {
+                int targetCoordinateY = currentY  + i;
+                int targetCoordinateX = currentX + leftShifting + j;
+                if ((
+                        rotatedPiece[i][j] == 1 &&
+                                (((targetCoordinateY >= BOARD_Y_SIZE) || (targetCoordinateY  < 0))
+                                        || ((targetCoordinateX >= BOARD_X_SIZE) || (targetCoordinateX  < 0)))
+                )) {
+                    return false;
+                }
 
-            while (left < right) {
+                if (rotatedPiece[i][j] == 1 &&
+                        !isElementOnBoardEmpty(targetCoordinateY,targetCoordinateX)) {
+                    return false;
+                }
 
-                int temp = rotatedPiece[i][left];
-                rotatedPiece[i][left] = rotatedPiece[i][right];
-                rotatedPiece[i][right] = temp;
-
-
-                left++;
-                right--;
             }
         }
 
-        if (pieceCanBeRotated(rotatedPiece)) {
+        return true;
+    }
+    private void rotatePieceWithLeftShifting(int nextState){
+        currentX-=1;
+        this.currentPieceMatrix = currentPiece.getShapeMatrix(nextState);
+        rotationState = nextState;
+        Tetris.refreshUI();
+    }
+    private void rotatePieceWithRightShifting(int nextState){
+        currentX+=1;
+        this.currentPieceMatrix = currentPiece.getShapeMatrix(nextState);
+        rotationState = nextState;
+        Tetris.refreshUI();
+    }
+    private boolean pieceCanBeRotatedWithRightShifting(int @NotNull [][] rotatedPiece){
+        int rightShifting = 1;
+        for (int i = 0; i < rotatedPiece.length; i++) {
+            for (int j = 0; j < rotatedPiece[0].length; j++) {
+                int targetCoordinateY = currentY  + i;
+                int targetCoordinateX = currentX + rightShifting + j;
+                if ((
+                        rotatedPiece[i][j] == 1 &&
+                                (((targetCoordinateY >= BOARD_Y_SIZE) || (targetCoordinateY  < 0))
+                                        || ((targetCoordinateX >= BOARD_X_SIZE) || (targetCoordinateX  < 0)))
+                )) {
+                    return false;
+                }
 
-            setCurrentPieceMatrix(rotatedPiece);
+                if (rotatedPiece[i][j] == 1 &&
+                        !isElementOnBoardEmpty(targetCoordinateY,targetCoordinateX)) {
+                    return false;
+                }
+
+            }
         }
+
+        return true;
     }
 
 
@@ -306,6 +322,7 @@ public class Board {
 
     private void newPieceSpawner() {
         selectCurrentPieceRandomly();
+            rotationState = 0;
             currentY = STARTY;
             currentX = STARTX;
             isGameOver();
