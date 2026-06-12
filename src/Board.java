@@ -1,3 +1,5 @@
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Random;
 
 public class Board {
@@ -9,7 +11,11 @@ public class Board {
     public int currentX;
     Tetromino currentPiece;
     int[][] currentPieceMatrix;
+<<<<<<< HEAD
     int rowsCleared = 0;
+=======
+    boolean isGameOver = false;
+>>>>>>> 880831d (Music and Style added)
 
     final Tetromino[][] board =
             new Tetromino[BOARD_Y_SIZE][BOARD_X_SIZE];
@@ -189,7 +195,7 @@ public class Board {
         return true;
     }
 
-    private boolean pieceCanBeRotated(int[][] rotatedPiece) {
+    private boolean pieceCanBeRotated(int @NotNull [][] rotatedPiece) {
 
         for (int i = 0; i < rotatedPiece.length; i++) {
             for (int j = 0; j < rotatedPiece[0].length; j++) {
@@ -290,8 +296,24 @@ public class Board {
     }
 
     private void newPieceSpawner() {
+
         selectCurrentPieceRandomly();
         currentY = STARTY;
         currentX = STARTX;
+        isGameOver();
+
+
+    }
+
+    private void isGameOver(){
+        for (int i = 0; i < currentPieceMatrix.length; i++) {
+            for (int j = 0; j < currentPieceMatrix[0].length; j++) {
+                if (currentPieceMatrix[i][j] == 1
+                && !getBoardElement(i+currentY, j+currentX ).name().equals("EMPTY")) {
+                    isGameOver = true;
+                }
+            }
+        }
+
     }
 }

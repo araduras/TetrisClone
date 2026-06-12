@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="1bed1f92-d3dc-493a-875f-cb9094130ac5" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/Controller/GameController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/Tetris 99.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/vineboom.mp3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Backend/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Backend/Board.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Backend/Sounds.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Backend/Sounds.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Backend/Tetromino.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Backend/Tetromino.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Frontend/Tetris.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Frontend/Tetris.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Backend/Board.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Backend/Board.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Backend/Sounds.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Backend/Sounds.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Backend/Tetromino.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Backend/Tetromino.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Frontend/Tetris.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Frontend/Tetris.class" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="a08a73baab538eb1a8337e8e95c19869d0c98f26" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;araduras&quot;
+  }
+}</component>
+  <component name="GitToolBoxStore">
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="remote-pc" />
+                    <option name="lastUsedInstant" value="1781264861" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
+  </component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/araduras/TetrisClone.git&quot;,
+    &quot;accountId&quot;: &quot;38adaf8e-0292-4ac6-b7e2-eac109fb3bf0&quot;
+  }
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3,
+  &quot;fromUser&quot;: false
+}</component>
+  <component name="ProjectId" id="3F2EPLEWFNG4TXXH7lAe4UWKFYB" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Application.Main.executor": "Run",
+    "Application.Run Tetris.executor": "Run",
+    "Application.Tetris.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "remote-pc",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/kreis/IdeaProjects/TetrisClone/target/classes",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "editor.preferences.completion.inline",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\kreis\IdeaProjects\TetrisClone\target\classes" />
+      <recent name="C:\Users\kreis\IdeaProjects\TetrisClone\target\classes\Frontend" />
+      <recent name="C:\Users\kreis\IdeaProjects\TetrisClone\target\classes\Backend" />
+      <recent name="C:\Users\kreis\IdeaProjects\TetrisClone\src\main\java" />
+      <recent name="C:\Users\kreis\IdeaProjects\TetrisClone\target" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.Run Tetris">
+    <list>
+      <item itemvalue="Application.Run Tetris" />
+      <item itemvalue="Maven.TetrisClone [clean,install]" />
+    </list>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-37e91769500f-intellij.indexing.shared.core-IU-261.25134.95" />
+        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-IU-261.25134.95" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="1bed1f92-d3dc-493a-875f-cb9094130ac5" name="Changes" comment="" />
+      <created>1781264741574</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1781264741574</updated>
+      <workItem from="1781264743383" duration="350000" />
+      <workItem from="1781265346277" duration="347000" />
+      <workItem from="1781265705084" duration="18972000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
