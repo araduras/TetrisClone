@@ -15,7 +15,7 @@ public class Style {
     public static final String BASE_GRID_STYLE = "-fx-fill: #333333; "; //Dark grey
     public static final String DEFAULT_BORDER_STYLE = "-fx-stroke: #000000; -fx-stroke-width: 0.5; -fx-stroke-type: inside;";
     public static final String RETRO_BORDER_STYLE = "";
-    public static final String COLOR_GRIDPANE = "-fx-background-color: #222222;";
+    public static final String DEFAULT_GRAY_COLOR = "-fx-background-color: #222222;";
     public static final String LARGE_TEXT_STYLE =
 
             "-fx-font-family: 'Comic Sans MS';" +

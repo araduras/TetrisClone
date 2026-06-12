@@ -7,12 +7,14 @@ import javafx.scene.media.AudioClip;
 public class Sounds {
     private final double DEFAULT_MUSIC_VOLUME = 0.1;
     private final double DEFAULT_SOUND_EFFECTS_VOLUME = 0.1;
+    public final static String DEFAULT_THEME = "Tetris 99";
     private ErrorHandler errorHandler = new ErrorHandler();
     public MediaPlayer mediaPlayer;
     public static double musicVolume;
     public static double soundEffectsVolume;
     String rotateSoundEffectFilename;
     AudioClip soundEffect_Rotate;
+
 
 
     public Sounds(){

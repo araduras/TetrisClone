@@ -1,0 +1,6 @@
+package Backend;
+
+public class Sizes {
+    public static final int idealColumnWidth = 500;
+    public static final int idealColumHeight = 600;
+}

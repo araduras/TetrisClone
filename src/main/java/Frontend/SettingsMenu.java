@@ -1,14 +1,13 @@
 package Frontend;
 
-
 import Backend.Style;
+import Backend.Util;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
-
-
 import static Frontend.PauseMenu.pauseMenu;
 import static Frontend.Tetris.gameMusic;
 
@@ -16,71 +15,78 @@ public class SettingsMenu {
     Slider musicVolumeSlider;
     Slider soundEffectVolumeSlider;
     Button backBtn;
+    VBox musicVolumeColumn;
+    VBox soundEffectVolumeColumn;
     static VBox settingsMenu;
-    final int sliderWidth = 500;
-    final int sliderHeight = 5;
 
-     SettingsMenu(){
-         settingsMenuSetup();
-         musicVolumeSliderSetup();
-         soundEffectsVolumeSliderSetup();
-         settingsMenu.getChildren().addAll(backBtn, musicVolumeSlider, soundEffectVolumeSlider);
+    SettingsMenu() {
+        settingsMenuSetup();
+        musicVolumeSliderSetup();
+        soundEffectsVolumeSliderSetup();
+        columSetup();
+        settingsMenu.getChildren().addAll( musicVolumeColumn, soundEffectVolumeColumn,backBtn);
+
 
     }
 
-    private void settingsMenuSetup(){
-        settingsMenu = new VBox();
-
+    private void settingsMenuSetup() {
+        settingsMenu = new VBox(20);
         settingsMenu.setMinHeight(200);
         settingsMenu.setMinWidth(400);
         settingsMenu.setStyle(Style.settingsMenuStyle);
+        settingsMenu.setAlignment(Pos.CENTER);
         settingsMenu.setFocusTraversable(true);
         settingsMenu.setVisible(false);
         settingsMenu.managedProperty().bind(settingsMenu.visibleProperty());
 
-        settingsMenu.setOnKeyPressed(event ->{
-            if(event.getCode() == KeyCode.ESCAPE ){
+        settingsMenu.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ESCAPE) {
                 pauseMenu.setVisible(true);
                 settingsMenu.setVisible(false);
                 pauseMenu.requestFocus();
             }
         });
 
-        backBtn = new Button("Back");
+
+
+        backBtn = Util.defaultBackBtn();
         backBtn.setOnAction(event -> {
             pauseMenu.setVisible(true);
             settingsMenu.setVisible(false);
             pauseMenu.requestFocus();
+
         });
-
-
-
-
     }
-   private void musicVolumeSliderSetup(){
-       Label musicVolumeSliderLabel = new Label("Music");
-       musicVolumeSlider  = new Slider();
-       musicVolumeSlider.setMaxSize(sliderWidth,sliderHeight);
-       musicVolumeSlider.setMin(0.0);
-       musicVolumeSlider.setMax(1.0);
-       musicVolumeSlider.setValue(gameMusic.getMusicVolume());
-       musicVolumeSlider.valueProperty().addListener(
-               (observable, oldValue, newValue) ->{
-                   gameMusic.setMusicVolume(newValue.doubleValue());
-               });
-   }
+    private void columSetup(){
+
+        musicVolumeColumn = new VBox(5);
+        musicVolumeColumn.setAlignment(Pos.CENTER);
+        Label musicVolumeSliderLabel = new Label("Music");
+        musicVolumeColumn.getChildren().addAll(musicVolumeSliderLabel,musicVolumeSlider);
+
+        soundEffectVolumeColumn = new VBox(5);
+        soundEffectVolumeColumn.setAlignment(Pos.CENTER);
+        Label  soundEffectVolumeSliderLabel = new Label("Music");
+        soundEffectVolumeColumn.getChildren().addAll( soundEffectVolumeSliderLabel, soundEffectVolumeSlider);
+    }
+
+    private void musicVolumeSliderSetup() {
+
+        musicVolumeSlider = Util.defaultSlider();
+        musicVolumeSlider.setValue(gameMusic.getMusicVolume());
+        musicVolumeSlider.valueProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    gameMusic.setMusicVolume(newValue.doubleValue());
+                });
+    }
 
 
-
-    private void soundEffectsVolumeSliderSetup(){
+    private void soundEffectsVolumeSliderSetup() {
         Label soundEffectsVolumeSliderLabel = new Label("Sound effects");
-        soundEffectVolumeSlider= new Slider();
-        soundEffectVolumeSlider.setMaxSize(sliderWidth,sliderHeight);
-        soundEffectVolumeSlider.setMin(0.0);
-        soundEffectVolumeSlider.setMax(1.0);
+        soundEffectVolumeSlider = Util.defaultSlider();
         soundEffectVolumeSlider.setValue(gameMusic.getMusicVolume());
         soundEffectVolumeSlider.valueProperty().addListener(
-                (observable, oldValue, newValue) ->{
+                (observable, oldValue, newValue) -> {
                     gameMusic.setSoundEffectsVolume(newValue.doubleValue());
                 });
     }
