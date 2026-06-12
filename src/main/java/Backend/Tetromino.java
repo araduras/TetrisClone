@@ -1,88 +1,227 @@
 package Backend;
 
 public enum Tetromino {
-    BLOCK(new int[][]
+    BLOCK(new int[][][]
             {
-                    {1, 1},
-                    {1, 1},
-            }, "X",
+                    {
+                            {1, 1},
+                            {1, 1},
+                    },
+                    {
+                            {1, 1},
+                            {1, 1},
+                    },
+                    {
+                            {1, 1},
+                            {1, 1},
+                    },
+                    {
+                            {1, 1},
+                            {1, 1},
+                    },
+
+            },
             Style.COLOR_BLOCK
     ),
 
-    L_SHAPE(new int[][]
+    L_SHAPE(new int[][][]
             {
-                    {1, 0, 0},
-                    {1, 0, 0},
-                    {1, 1, 0}
-            }, "X",
+                    {
+                            {0, 0, 1},
+                            {1, 1, 1},
+                            {0, 0, 0}
+                    },
+                    {
+                            {0, 1, 0},
+                            {0, 1, 0},
+                            {0, 1, 1}
+                    },
+                    {
+                            {0, 0, 0},
+                            {1, 1, 1},
+                            {1, 0, 0}
+                    },
+                    {
+                            {1, 1, 0},
+                            {0, 1, 0},
+                            {0, 1, 0}
+                    },
+
+            },
+
+
             Style.COLOR_L_SHAPE
     ),
-    REVERSE_L_SHAPE(new int[][]
+    REVERSE_L_SHAPE(new int[][][]
             {
-                    {0, 1, 0},
-                    {0, 1, 0},
-                    {1, 1, 0}
-            }, "X",
+                    {
+                    {1, 0, 0},
+                    {1, 1, 1},
+                    {0, 0, 0}
+            },
+                    {
+                            {0, 1, 1},
+                            {0, 1, 0},
+                            {0, 1, 0}
+                    },
+                    {
+                            {0, 0, 0},
+                            {1, 1, 1},
+                            {0, 0, 1}
+                    },
+
+                    {
+                            {0, 1, 0},
+                            {0, 1, 0},
+                            {1, 1, 0}
+                    }
+
+
+
+
+
+
+
+
+            },
             Style.COLOR_REVERSE_L_SHAPE
     ),
-    LEFT_ZIGZAG(new int[][]
+    LEFT_ZIGZAG(new int[][][]
             {
-                    {1, 1, 0},
-                    {0, 1, 1},
-                    {0, 0, 0}
-            }, "X",
+                    {
+                            {1, 1, 0},
+                            {0, 1, 1},
+                            {0, 0, 0}
+                    },
+                    {
+                            {0, 0, 1},
+                            {0, 1, 1},
+                            {0, 1, 0}
+                    },
+                    {
+                            {1, 1, 0},
+                            {0, 1, 1},
+                            {0, 0, 0}
+                    },
+                    {
+                            {0, 0, 1},
+                            {0, 1, 1},
+                            {0, 1, 0}
+                    }
+
+            },
             Style.COLOR_LEFT_ZIGZAG
     ),
-    RIGHT_ZIGZAG(new int[][]
+    RIGHT_ZIGZAG(new int[][][]
             {
-                    {0, 1, 1},
-                    {1, 1, 0},
-                    {0, 0, 0}
-            }, "X",
+                    {
+                            {0, 1, 1},
+                            {1, 1, 0},
+                            {0, 0, 0}
+                    },
+
+                    {
+                            {0, 1, 0},
+                            {0, 1, 1},
+                            {0, 0, 1}
+                    },
+                    {
+                            {0, 1, 1},
+                            {1, 1, 0},
+                            {0, 0, 0}
+                    },
+
+                    {
+                            {0, 1, 0},
+                            {0, 1, 1},
+                            {0, 0, 1}
+                    }
+
+
+            },
             Style.COLOR_RIGHT_ZIGZAG
     ),
-    T_SHAPE(new int[][]
+    T_SHAPE(new int[][][]
             {
-                    {1, 1, 1},
-                    {0, 1, 0},
-                    {0, 0, 0}
-            }, "X",
+                    {
+                            {0, 1, 0},
+                            {1, 1, 1},
+                            {0, 0, 0}
+                    },
+                    {
+                            {0, 1, 0},
+                            {0, 1, 1},
+                            {0, 1, 0}
+                    },
+                    {
+                            {0, 0, 0},
+                            {1, 1, 1},
+                            {0, 1, 0}
+                    },
+                    {
+                            {0, 1, 0},
+                            {1, 1, 0},
+                            {0, 1, 0}
+                    },
+
+
+
+            },
             Style.COLOR_T_SHAPE
     ),
-    I_SHAPE(new int[][]
+    I_SHAPE(new int[][][]
             {
-                    {1, 0, 0, 0},
-                    {1, 0, 0, 0},
-                    {1, 0, 0, 0},
-                    {1, 0, 0, 0}
-            }, "X",
+                    {
+                            {0, 0, 0, 0},
+                            {1, 1, 1, 1},
+                            {0, 0, 0, 0},
+                            {0, 0, 0, 0}
+                    },
+                    {
+                            {0, 0, 1, 0},
+                            {0, 0, 1, 0},
+                            {0, 0, 1, 0},
+                            {0, 0, 1, 0}
+                    },
+
+                    {
+                            {0, 0, 0, 0},
+                            {0, 0, 0, 0},
+                            {1, 1, 1, 1},
+                            {0, 0, 0, 0}
+                    },
+                    {
+                            {0, 1, 0, 0},
+                            {0, 1, 0, 0},
+                            {0, 1, 0, 0},
+                            {0, 1, 0, 0}
+                    }
+            },
             Style.COLOR_I_SHAPE
     ),
-    EMPTY(new int[][]{
-            {0}
-    }, ".",
+    EMPTY(new int[][][]{
+            {{0}}
+    },
             Style.COLOR_EMPTY
     );
 
 
-    private int[][] shapeMatrix;
-    private final String symbol;
+    private final int[][][] shapeMatrix;
     private final String colorStyle;
-    private Tetromino(int[][] shapeMatrix, String symbol, String colorStyle) {
+
+    private Tetromino(int[][][] shapeMatrix, String colorStyle) {
         this.shapeMatrix = shapeMatrix;
-        this.symbol = symbol;
+
         this.colorStyle = colorStyle;
     }
 
-    public String getTetrominoSymbol() {
-        return this.symbol;
+    public int[][] getShapeMatrix(int rotationState) {
+        return this.shapeMatrix[rotationState];
     }
-    public int[][] getShapeMatrix() {
-        return this.shapeMatrix;
-    }
-    public String getStyle(){return "-fx-fill: " + this.colorStyle + "; " + Style.DEFAULT_BORDER_STYLE;}
-    public void setShapeMatrix(int[][] shapeMatrix){
-        this.shapeMatrix = shapeMatrix;
+
+    public String getStyle() {
+        return "-fx-fill: " + this.colorStyle + "; " + Style.DEFAULT_BORDER_STYLE;
     }
 
 }
+

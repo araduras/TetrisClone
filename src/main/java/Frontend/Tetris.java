@@ -72,10 +72,10 @@ public class Tetris extends Application {
 
                 //Keys
                 if (event.getCode() == KeyCode.LEFT) {
-                    board.movePieceLeft();
+                    board.DEFAULT_MOVE_PIECE_LEFT();
                     refreshUI();
                 } else if (event.getCode() == KeyCode.RIGHT) {
-                    board.movePieceRight();
+                    board.DEFAULT_MOVE_PIECE_RIGHT();
                     refreshUI();
                 } else if (event.getCode() == KeyCode.DOWN) {
                     board.movePieceDown();
@@ -217,7 +217,7 @@ public class Tetris extends Application {
                 } else if (
                         (i - board.currentY >= 0 && i - board.currentY < currentPieceMatrixHeight)
                                 && (j - board.currentX >= 0 && j - board.currentX < currentPieceMatrixWidth)
-                                && (board.currentPiece.getShapeMatrix()[i - board.currentY][j - board.currentX] == 1)
+                                && (currentPieceMatrix[i - board.currentY][j - board.currentX] == 1)
                 ) {
                     //Active falling piece
                     gridCells[i][j].setStyle(board.currentPiece.getStyle());
