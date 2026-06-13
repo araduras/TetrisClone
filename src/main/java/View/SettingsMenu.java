@@ -18,16 +18,13 @@ public class SettingsMenu {
     VBox soundEffectVolumeColumn;
     static VBox settingsMenu;
 
-    SettingsMenu() {
+    SettingsMenu(Runnable onMusicVolumeAdjust, Runnable onSoundEffectVolumeAdjust, Runnable onBackBtn) {
         settingsMenuSetup();
         musicVolumeSliderSetup();
         soundEffectsVolumeSliderSetup();
         columSetup();
         settingsMenu.getChildren().addAll( musicVolumeColumn, soundEffectVolumeColumn,backBtn);
-
-
     }
-
     private void settingsMenuSetup() {
         settingsMenu = new VBox(20);
         settingsMenu.setMinHeight(200);
@@ -36,6 +33,8 @@ public class SettingsMenu {
         settingsMenu.setAlignment(Pos.CENTER);
         settingsMenu.setFocusTraversable(true);
         settingsMenu.setVisible(false);
+
+        //?
         settingsMenu.managedProperty().bind(settingsMenu.visibleProperty());
 
         settingsMenu.setOnKeyPressed(event -> {

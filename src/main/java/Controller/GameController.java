@@ -6,10 +6,6 @@ import Util.Sounds;
 import javafx.animation.AnimationTimer;
 import javafx.scene.input.KeyEvent;
 
-import static View.PauseMenu.pauseMenu;
-import static View.Tetris.*;
-
-
 public class GameController {
     long lastUpdate = 0;
     public static AnimationTimer animationTimer;
@@ -18,7 +14,8 @@ public class GameController {
     public static long CURRENT_GAME_SPEED = Time.DEFAULT_GAME_SPEED;
     Board board;
     RefreshGameUI ui;
-   public GameController(Board board, RefreshGameUI ui){
+
+    public GameController(Board board, RefreshGameUI ui) {
         this.board = board;
         this.ui = ui;
         animationTimer = new AnimationTimer() {
@@ -35,28 +32,27 @@ public class GameController {
                 }
             }
         };
-       animationTimer.start();
-       gameMusic.playMusic(Sounds.DEFAULT_THEME);
-
+        animationTimer.start();
+        gameMusic.playMusic(Sounds.DEFAULT_THEME);
     }
 
-
-    private void escapeHandler(){
-        if (!isPaused){
+    private void escapeHandler() {
+        if (!isPaused) {
             animationTimer.stop();
-            isPaused = true;
-            pauseMenuStackPane.setVisible(true);
             gameMusic.pauseMusic();
-            pauseMenu.requestFocus();
+            ui.setPauseMenuVisible(true);
+            isPaused = true;
+
         }
 
         if (isPaused) {
-        return;
-    }
+            resumeGame();
+        }
 
     }
-    public void handleKeyPress(KeyEvent event){
-        switch (event.getCode()){
+
+    public void handleKeyPress(KeyEvent event) {
+        switch (event.getCode()) {
             case LEFT -> board.DEFAULT_MOVE_PIECE_LEFT();
             case RIGHT -> board.DEFAULT_MOVE_PIECE_RIGHT();
             case UP -> board.rotatePiece();
@@ -65,4 +61,26 @@ public class GameController {
         }
         ui.refreshUI();
     }
+
+    public void resumeGame() {
+        GameController.animationTimer.start();
+        GameController.isPaused = false;
+        ui.setPauseMenuVisible(false);
+        ui.setPauseMenuOverlayVisible(false);
+        gameMusic.resumeMusic();
+    }
+
+    public void openSettingsMenu() {
+        ui.setSettingsMenuVisible(true);
+    }
+
+    public void restartBoard() {
+        this.board.boardClear();
+        ui.refreshUI();
+    }
+
+    public void quitGame() {
+        System.exit(0);
+    }
+
 }

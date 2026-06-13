@@ -1,4 +1,5 @@
 package View;
+
 import Controller.GameController;
 import Controller.RefreshGameUI;
 import Model.Board;
@@ -42,13 +43,14 @@ public class Tetris extends Application implements RefreshGameUI {
     public static void main(String[] args) {
         launch(args);
     }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         try {
             firstLayerBackgroundStackPane.setStyle(Style.DEFAULT_GRAY_COLOR);
             gameSetup(primaryStage);
-        firstLayerBackgroundStackPane.getChildren().add(mainLayout);
-        Scene scene = new Scene(firstLayerBackgroundStackPane, 650, 650);
+            firstLayerBackgroundStackPane.getChildren().add(mainLayout);
+            Scene scene = new Scene(firstLayerBackgroundStackPane, 650, 650);
 
             primaryStage.setScene(scene);
             primaryStage.show();
@@ -58,25 +60,31 @@ public class Tetris extends Application implements RefreshGameUI {
                 controller.handleKeyPress(event);
             });
 
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void gameSetup(Stage primaryStage){
+    private void gameSetup(Stage primaryStage) {
+        board = new Board();
+        controller = new GameController(board, this);
+
         gameStackPane = new StackPane();
         pauseMenuStackPane = new StackPane();
-        new PauseMenu();
+
+        new PauseMenu(
+                controller::resumeGame,
+                controller::openSettingsMenu,
+                controller::restartBoard,
+                controller::quitGame
+        );
         new SettingsMenu();
-        board = new Board();
-        controller = new GameController(board,this);
+
         this.pauseMenu = PauseMenu.pauseMenu;
         this.settingsMenu = SettingsMenu.settingsMenu;
 
-        pauseMenuStackPane.getChildren().addAll(pauseMenu,settingsMenu);
+        pauseMenuStackPane.getChildren().addAll(pauseMenu, settingsMenu);
         pauseMenuStackPane.setVisible(false);
-
 
         primaryStage.setFullScreenExitHint("");
         primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
@@ -84,22 +92,24 @@ public class Tetris extends Application implements RefreshGameUI {
         boxLeftRightSetup();
         leftColumnSetup();
         rightColumnSetup();
-        mainLayoutSetup(leftColumn,rightColumn);
+        mainLayoutSetup(leftColumn, rightColumn);
         gridSetup();
 
         gameStackPane.getChildren().addAll(gridPane, pauseMenuStackPane);
     }
-    private void mainLayoutSetup(VBox leftColumn, VBox rightColumn){
-        //WindowSetup
+
+    private void mainLayoutSetup(VBox leftColumn, VBox rightColumn) {
+
         this.mainLayout = new BorderPane();
         mainLayout.setCenter(gameStackPane);
         mainLayout.setLeft(leftColumn);
         mainLayout.setRight(rightColumn);
-        BorderPane.setMargin(leftColumn, new Insets(0,30,0,0));
+        BorderPane.setMargin(leftColumn, new Insets(0, 30, 0, 0));
         BorderPane.setMargin(rightColumn, new Insets(0, 0, 0, 30));
         mainLayout.setMaxWidth(680);
         mainLayout.setPrefWidth(680);
     }
+
     private void leftColumnSetup() {
         //Left column
         leftColumn = new VBox(10);
@@ -113,9 +123,10 @@ public class Tetris extends Application implements RefreshGameUI {
         holdTitle.setStyle(Style.LARGE_TEXT_STYLE);
         holdTitle.setAlignment(Pos.CENTER);
 
-        leftColumn.getChildren().addAll(holdTitle,holdPieceBox,scoreBox);
+        leftColumn.getChildren().addAll(holdTitle, holdPieceBox, scoreBox);
     }
-    private void rightColumnSetup(){
+
+    private void rightColumnSetup() {
         //Right column
         rightColumn = new VBox(10);
         rightColumn.setAlignment(Pos.TOP_RIGHT);
@@ -130,13 +141,15 @@ public class Tetris extends Application implements RefreshGameUI {
 
         rightColumn.getChildren().addAll(label, nextPieceBox);
     }
-    private void boxLeftRightSetup(){
-        nextPieceBox.setMaxSize(1,1);
-        scoreBox.setMaxSize(1,1);
-        holdPieceBox.setMaxSize(1,1);
+
+    private void boxLeftRightSetup() {
+        nextPieceBox.setMaxSize(1, 1);
+        scoreBox.setMaxSize(1, 1);
+        holdPieceBox.setMaxSize(1, 1);
 
     }
-    private void gridSetup(){
+
+    private void gridSetup() {
         gridCells = new Rectangle[Board.BOARD_Y_SIZE][Board.BOARD_X_SIZE];
         for (int i = 0; i < Board.BOARD_Y_SIZE; i++) {
             for (int j = 0; j < Board.BOARD_X_SIZE; j++) {
@@ -151,6 +164,7 @@ public class Tetris extends Application implements RefreshGameUI {
 
 
     }
+
 
     public void refreshUI() {
         if (board == null || board.currentPieceMatrix == null) {
@@ -179,5 +193,30 @@ public class Tetris extends Application implements RefreshGameUI {
             }
         }
 
+    }
+
+    @Override
+    public void setPauseMenuVisible(boolean visible) {
+
+        pauseMenu.setVisible(visible);
+        if (visible) {
+            setPauseMenuOverlayVisible(true);
+            pauseMenu.requestFocus();
+        } else {
+            gameStackPane.requestFocus();
+        }
+    }
+
+    @Override
+    public void setPauseMenuOverlayVisible(boolean visible) {
+        pauseMenuStackPane.setVisible(visible);
+    }
+
+    @Override
+    public void setSettingsMenuVisible(boolean visible) {
+        settingsMenu.setVisible(visible);
+        if (visible) {
+            settingsMenu.requestFocus();
+        }
     }
 }

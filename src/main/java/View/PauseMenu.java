@@ -1,64 +1,53 @@
 package View;
 
-import Controller.GameController;
-import Controller.RefreshGameUI;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 
-import static View.SettingsMenu.settingsMenu;
-import static View.Tetris.gameMusic;
-import static View.Tetris.gameStackPane;
+
 
 public class PauseMenu {
     public static final VBox pauseMenu = new VBox(10);
 
-    public PauseMenu(){
+    public PauseMenu(Runnable onResume,  Runnable onSettings, Runnable onRestart, Runnable onQuit){
             pauseMenu.setAlignment(Pos.CENTER);
             pauseMenu.setStyle("-fx-background-color: rgba(34, 34, 34, 0.75);");
             pauseMenu.setFocusTraversable(true);
 
             pauseMenu.setOnKeyPressed(event -> {
                 if (event.getCode() == KeyCode.ESCAPE){
-                    GameController.animationTimer.start();
-                    GameController.isPaused = false;
-                    Tetris.pauseMenuStackPane.setVisible(false);
-                    gameMusic.resumeMusic();
-                    gameStackPane.requestFocus();
+                    onResume.run();
+
                 }
             });
 
             //ResumeBtn
             Button resumeBtn = new Button("Resume");
             resumeBtn.setOnAction(event -> {
-                GameController.animationTimer.start();
-                GameController.isPaused = false;
-                Tetris.pauseMenuStackPane.setVisible(false);
-                gameMusic.resumeMusic();
-                gameStackPane.requestFocus();
+                onResume.run();
+
             });
 
             //SettingsBtn
             Button settingsBtn = new Button("Settings");
-
             settingsBtn.setOnAction(event -> {
-                pauseMenu.setVisible(false);
-                settingsMenu.setVisible(true);
-                settingsMenu.requestFocus();
+                onSettings.run();
+
             });
 
             //RestartBtn
             Button restartBtn = new Button("Restart");
             restartBtn.setOnAction(event -> {
-                Tetris.board.boardClear();
-                Tetris.refreshUI();
+                onRestart.run();
+
             });
 
             //QuitBtn
             Button quitBtn = new Button("Quit");
             quitBtn.setOnAction(event -> {
-                System.exit(0);
+                onQuit.run();
+
             });
 
         pauseMenuBtnSetup(restartBtn);
