@@ -64,7 +64,7 @@ public class SettingsMenu {
         settingsMenu.setVisible(false);
 
         //managedProperty = whether it takes space on screen
-        settingsMenu.managedProperty().bind(settingsMenu.visibleProperty());
+
 
     }
 

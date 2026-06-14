@@ -31,7 +31,7 @@ public class Tetris extends Application implements RefreshGameUI {
     public static Board board;
     public static StackPane gameStackPane;
     public static StackPane pauseMenuStackPane;
-    private static Rectangle[][] gridCells;
+    private static Rectangle[][] boardGridCells;
 
     public static final VBox holdPieceBox = new VBox(30);
     public static final VBox nextPieceBox = new VBox(30);
@@ -93,7 +93,8 @@ public class Tetris extends Application implements RefreshGameUI {
         primaryStage.setFullScreenExitHint("");
         primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 
-        boxLeftRightSetup();
+        boxesRightSideSetup();
+        boxesLeftSideSetup();
         leftColumnSetup();
         rightColumnSetup();
         mainLayoutSetup(leftColumn, rightColumn);
@@ -103,7 +104,6 @@ public class Tetris extends Application implements RefreshGameUI {
     }
 
     private void mainLayoutSetup(VBox leftColumn, VBox rightColumn) {
-
         this.mainLayout = new BorderPane();
         mainLayout.setCenter(gameStackPane);
         mainLayout.setLeft(leftColumn);
@@ -146,27 +146,44 @@ public class Tetris extends Application implements RefreshGameUI {
         rightColumn.getChildren().addAll(label, nextPieceBox);
     }
 
-    private void boxLeftRightSetup() {
-        nextPieceBox.setMaxSize(1, 1);
-        scoreBox.setMaxSize(1, 1);
-        holdPieceBox.setMaxSize(1, 1);
+    private void boxesRightSideSetup() {
+        nextPieceBox.setMaxSize(100, 100);
+        scoreBox.setMaxSize(100, 100);
+
+
+    }
+    private void boxesLeftSideSetup() {
+        holdPieceBox.setMaxSize(100, 100);
+        GridPane holdPieceBoxGridPane = new GridPane();
+        Rectangle[][] holdPieceBoxGridCells = new Rectangle[6][6];
+
+
+        for (int i = 0; i < holdPieceBoxGridCells.length; i++) {
+            for (int j = 0; j < holdPieceBoxGridCells[0].length; j++) {
+                Rectangle baseGrid = new Rectangle(40, 40);
+                baseGrid.setStyle(Style.baseGridStyleWithBorder);
+                holdPieceBoxGridPane.add(baseGrid,i,j);
+                holdPieceBoxGridCells[i][j] = baseGrid;
+            }
+        }
+
+        holdPieceBox.setAlignment(Pos.CENTER);
+holdPieceBox.getChildren().add(holdPieceBoxGridPane);
 
     }
 
     private void gridSetup() {
-        gridCells = new Rectangle[Board.BOARD_Y_SIZE][Board.BOARD_X_SIZE];
+        boardGridCells = new Rectangle[Board.BOARD_Y_SIZE][Board.BOARD_X_SIZE];
         for (int i = 0; i < Board.BOARD_Y_SIZE; i++) {
             for (int j = 0; j < Board.BOARD_X_SIZE; j++) {
                 Rectangle baseGrid = new Rectangle(30, 30);
-                baseGrid.setStyle(Style.baseGridStyle);
+                baseGrid.setStyle(Style.baseGridStyleWithBorder);
                 gridPane.add(baseGrid, j, i);
-                gridCells[i][j] = baseGrid;
+                boardGridCells[i][j] = baseGrid;
             }
         }
         gridPane.setAlignment(Pos.CENTER);
         gridPane.setStyle(Style.DEFAULT_GRAY_COLOR);
-
-
     }
 
 
@@ -181,17 +198,17 @@ public class Tetris extends Application implements RefreshGameUI {
             for (int j = 0; j < Board.BOARD_X_SIZE; j++) {
                 if (!board.getBoardElement(i, j).name().equals("EMPTY")) {
                     //Locked on piece
-                    gridCells[i][j].setStyle(board.getBoardElement(i, j).getStyle());
+                    boardGridCells[i][j].setStyle(board.getBoardElement(i, j).getStyle());
                 } else if (
                         (i - board.currentY >= 0 && i - board.currentY < currentPieceMatrixHeight)
                                 && (j - board.currentX >= 0 && j - board.currentX < currentPieceMatrixWidth)
                                 && (currentPieceMatrix[i - board.currentY][j - board.currentX] == 1)
                 ) {
                     //Active falling piece
-                    gridCells[i][j].setStyle(board.currentPiece.getStyle());
+                    boardGridCells[i][j].setStyle(board.currentPiece.getStyle());
                 } else {
                     //Empty cells
-                    gridCells[i][j].setStyle(Style.emptyGridCellStyle);
+                    boardGridCells[i][j].setStyle(Style.emptyGridCellStyle);
 
                 }
             }

@@ -10,8 +10,8 @@ public class Sounds {
     public final static String DEFAULT_THEME = "Tetris 99";
     private ErrorHandler errorHandler = new ErrorHandler();
     public MediaPlayer mediaPlayer;
-    public static double musicVolume;
-    public static double soundEffectsVolume;
+    public double musicVolume;
+    public double soundEffectsVolume;
     String rotateSoundEffectFilename;
     AudioClip soundEffect_Rotate;
 
@@ -28,7 +28,7 @@ public class Sounds {
         try {
             String audioPath = getClass().getResource("/" + rotateSoundEffectFilename).toExternalForm();
             soundEffect_Rotate = new AudioClip(audioPath);
-            soundEffect_Rotate.setVolume(soundEffectsVolume);
+            soundEffect_Rotate.setVolume(this.soundEffectsVolume);
         }
         catch (Exception e){
             System.out.println(errorHandler.ERROR_MESSAGE_FILE_READ_ERROR);
@@ -36,7 +36,7 @@ public class Sounds {
         }
     }
     public void playSoundEffect_Rotate(){
-        soundEffect_Rotate.setVolume(getSoundEffectsVolume());
+
         soundEffect_Rotate.play();
     }
 
@@ -61,17 +61,21 @@ public class Sounds {
 
 
     public void setMusicVolume(double volume){
-        musicVolume = volume;
+        this.musicVolume = volume;
+        if(mediaPlayer != null){
+            mediaPlayer.setVolume(volume);
+        }
+
     }
     public double getMusicVolume(){
-        return musicVolume;
+        return this.musicVolume;
     }
 
     public double getSoundEffectsVolume(){
-        return soundEffectsVolume;
+        return this.soundEffectsVolume;
     }
     public void setSoundEffectsVolume(double volume){
-        soundEffectsVolume = volume;
+        this.soundEffectsVolume = volume;
     }
 
     public void pauseMusic(){

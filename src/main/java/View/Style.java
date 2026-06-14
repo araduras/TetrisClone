@@ -42,7 +42,7 @@ public class Style {
                     "-fx-background-color: #444444;" +
                     "-fx-cursor: hand;";
 
-    public static String baseGridStyle = BASE_GRID_STYLE + DEFAULT_BORDER_STYLE;
+    public static String baseGridStyleWithBorder = BASE_GRID_STYLE + DEFAULT_BORDER_STYLE;
     public static String emptyGridCellStyle = BASE_GRID_STYLE + DEFAULT_BORDER_STYLE;
 
 }

@@ -2,9 +2,8 @@ package Model;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Random;
-
-
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class Board {
@@ -13,21 +12,26 @@ public class Board {
     public static final int STARTY = 0;
     public static final int STARTX = 4;
     int rowsCleared = 0;
-    private int rotationState = 0;
+    private int rotationState = 2;
     public int currentY;
     public int currentX;
     public Tetromino currentPiece;
     public int[][] currentPieceMatrix;
     public boolean isGameOver = false;
-    public boolean isFirstPieceOfTheGame = true;
-
+    boolean currentPieceHoldable = true;
+    int holdActionCooldown = 0;
+    boolean isFirstPieceOfTheGame;
+    public ArrayList<Tetromino> holdPieceList = new ArrayList<>();
+    ArrayList<Tetromino> randomPieces = Arrays.stream(Tetromino.values())
+            .filter(piece -> !piece.equals(Tetromino.EMPTY))
+            .collect(Collectors.toCollection(ArrayList::new));
+    ArrayList<Tetromino> upComingPieces = new ArrayList<>();
     final Tetromino[][] board =
             new Tetromino[BOARD_Y_SIZE][BOARD_X_SIZE];
 
     public Board() {
         boardInit();
-        newPieceSpawner();
-
+        newPieceSpawnLoop();
     }
 
     public Tetromino getBoardElement(int y, int x) {
@@ -46,28 +50,17 @@ public class Board {
         }
     }
 
-
-    private void selectCurrentPieceRandomly() {
-        Random rnd = new Random();
-        Tetromino[] randomPiece = Tetromino.values();
-        Tetromino[] pieces = Tetromino.values();
-        currentPiece = pieces[rnd.nextInt(pieces.length - 1)];
-
-        currentPieceMatrix = currentPiece.getShapeMatrix(0);
-
+    private void randomPiecesListHandler() {
+        if (upComingPieces.size() <= 5) {
+            for (int i = 0; i < 2; i++) {
+                Collections.shuffle(randomPieces);
+                upComingPieces.addAll(randomPieces);
+            }
+        }
+        currentPiece = upComingPieces.getFirst();
+        upComingPieces.remove(upComingPieces.getFirst());
     }
 
-
-
-    public void setCurrentPieceMatrix(int[][] currentPieceMatrix) {
-        this.currentPieceMatrix = currentPieceMatrix;
-    }
-
-    /**
-     * For downward movement
-     *
-     * @param Y Increment Y value
-     */
     public void changeCurrentPieceY(int Y) {
         currentY += Y;
     }
@@ -76,40 +69,33 @@ public class Board {
         currentX += X;
     }
 
-
-
-
     private boolean isRowFull(int row) {
         for (int i = 0; i < board[0].length; i++) {
-            if (getBoardElement(row, i).name().equals("EMPTY")){
+            if (getBoardElement(row, i).name().equals("EMPTY")) {
                 return false;
             }
         }
         return true;
     }
 
-    private boolean isElementOnBoardEmpty(int y, int x){
-        return getBoardElement(y,x).name().equals("EMPTY") ? true : false;
+    private boolean isElementOnBoardEmpty(int y, int x) {
+        return getBoardElement(y, x).name().equals("EMPTY");
     }
-    public void rowClear(){
-        for (int i = board.length-1; i >=0 ; i--) {
-            if (isRowFull(i)){
-                for (int j = 0; j < board[0].length; j++) {
-                    setBoardElement(i,j, Tetromino.EMPTY);
-                }
 
-                for (int row = i; row >= 0; row++) {
+    public void rowClear() {
+        for (int i = board.length - 1; i >= 0; i--) {
+            if (isRowFull(i)) {
+                for (int j = 0; j < board[0].length; j++) {
+                    setBoardElement(i, j, Tetromino.EMPTY);
+                }
+                for (int row = i - 1; row >= 0; row--) {
                     for (int j = 0; j < board[0].length; j++) {
-                        if (!getBoardElement(i-1,j).name().equals("EMPTY")){
-                            setBoardElement(i,j, getBoardElement(i-1,j));
-                            setBoardElement(i-1,j, Tetromino.EMPTY);
+                        if (!getBoardElement(row, j).name().equals("EMPTY")) {
+                            setBoardElement(row + 1, j, getBoardElement(row, j));
+                            setBoardElement(row, j, Tetromino.EMPTY);
                         }
                     }
-
-
                 }
-
-
                 rowsCleared++;
                 i++;
             }
@@ -119,14 +105,13 @@ public class Board {
     public void movePieceDown() {
         if (!pieceReachedBottomOrOtherPiece()) {
             changeCurrentPieceY(1);
-
         } else {
             lockPieceToBoard();
             rowClear();
-
-            newPieceSpawner();
+            newPieceSpawnLoop();
         }
     }
+
     private boolean pieceCanBeMovedLeft(int @NotNull [][] pieceToBeMovedLeft) {
         for (int i = 0; i < pieceToBeMovedLeft.length; i++) {
             for (int j = 0; j < pieceToBeMovedLeft[0].length; j++) {
@@ -135,7 +120,8 @@ public class Board {
                     if (targetX == -1) {
                         return false;
                     }
-                    if (!getBoardElement(currentY + i, targetX).name().equals("EMPTY")) {
+                    if ((targetX < 0)
+                            || !getBoardElement(currentY + i, targetX).name().equals("EMPTY")) {
                         return false;
                     }
                 }
@@ -152,7 +138,7 @@ public class Board {
                     if (targetX == BOARD_X_SIZE) {
                         return false;
                     }
-                    if (!getBoardElement(currentY + i, targetX).name().equals("EMPTY")) {
+                    if ((targetX >= BOARD_X_SIZE) || !getBoardElement(currentY + i, targetX).name().equals("EMPTY")) {
                         return false;
                     }
                 }
@@ -162,21 +148,20 @@ public class Board {
     }
 
     private boolean pieceCanBeRotated(int @NotNull [][] rotatedPiece) {
-
         for (int i = 0; i < rotatedPiece.length; i++) {
             for (int j = 0; j < rotatedPiece[0].length; j++) {
                 int targetCoordinateY = currentY + i;
                 int targetCoordinateX = currentX + j;
                 if ((
                         rotatedPiece[i][j] == 1 &&
-                                (((targetCoordinateY >= BOARD_Y_SIZE) || (targetCoordinateY  < 0))
-                                        || ((targetCoordinateX >= BOARD_X_SIZE) || (targetCoordinateX  < 0)))
+                                (((targetCoordinateY >= BOARD_Y_SIZE) || (targetCoordinateY < 0))
+                                        || ((targetCoordinateX >= BOARD_X_SIZE) || (targetCoordinateX < 0)))
                 )) {
                     return false;
                 }
 
                 if (rotatedPiece[i][j] == 1 &&
-                        !isElementOnBoardEmpty(targetCoordinateY,targetCoordinateX)) {
+                        !isElementOnBoardEmpty(targetCoordinateY, targetCoordinateX)) {
                     return false;
                 }
 
@@ -198,48 +183,66 @@ public class Board {
         if (!pieceReachedBottomOrOtherPiece()
                 && pieceCanBeMovedRight(currentPieceMatrix)) {
             changeCurrentPieceX(+1);
-
         }
     }
 
-    public void rotatePiece(){
-        int nextState = (rotationState + 1)%4;
-        if(pieceCanBeRotated(currentPiece.getShapeMatrix(nextState)))
-        {
+    public void hardDrop() {
+        while (!pieceReachedBottomOrOtherPiece()) {
+            movePieceDown();
+        }
+    }
+
+
+    public boolean rotatePiece() {
+        int nextState = (rotationState + 1) % 4;
+        if (pieceCanBeRotated(currentPiece.getShapeMatrix(nextState))) {
             this.currentPieceMatrix = currentPiece.getShapeMatrix(nextState);
             rotationState = nextState;
-            gameMusic.playSoundEffect_Rotate();
-
-            return;
+            return true;
         }
 
         if (pieceCanBeMovedLeft(currentPiece.getShapeMatrix(nextState))
                 && pieceCanBeRotatedWithLeftShifting(currentPiece.getShapeMatrix(nextState))) {
             rotatePieceWithLeftShifting(nextState);
+            return true;
 
         } else if (pieceCanBeMovedRight(currentPiece.getShapeMatrix(nextState))
                 && pieceCanBeRotatedWithRightShifting(currentPiece.getShapeMatrix(nextState))) {
             rotatePieceWithRightShifting(nextState);
-        }
+            return true;
+        } else return false;
+    }
+
+    private void rotatePieceWithLeftShifting(int nextState) {
+        currentX -= 1;
+        this.currentPieceMatrix = currentPiece.getShapeMatrix(nextState);
+        rotationState = nextState;
 
     }
 
-    private boolean pieceCanBeRotatedWithLeftShifting(int @NotNull [][] rotatedPiece){
-       int leftShifting = -1;
+    private void rotatePieceWithRightShifting(int nextState) {
+        currentX += 1;
+        this.currentPieceMatrix = currentPiece.getShapeMatrix(nextState);
+        rotationState = nextState;
+
+    }
+
+    private boolean pieceCanBeRotatedWithLeftShifting(int @NotNull [][] rotatedPiece) {
+        int leftShifting = -1;
         for (int i = 0; i < rotatedPiece.length; i++) {
             for (int j = 0; j < rotatedPiece[0].length; j++) {
-                int targetCoordinateY = currentY  + i;
+                int targetCoordinateY = currentY + i;
                 int targetCoordinateX = currentX + leftShifting + j;
                 if ((
                         rotatedPiece[i][j] == 1 &&
-                                (((targetCoordinateY >= BOARD_Y_SIZE) || (targetCoordinateY  < 0))
-                                        || ((targetCoordinateX >= BOARD_X_SIZE) || (targetCoordinateX  < 0)))
+                                (((targetCoordinateY >= BOARD_Y_SIZE) || (targetCoordinateY < 0))
+                                        || ((targetCoordinateX >= BOARD_X_SIZE) || (targetCoordinateX < 0)))
                 )) {
                     return false;
                 }
 
                 if (rotatedPiece[i][j] == 1 &&
-                        !isElementOnBoardEmpty(targetCoordinateY,targetCoordinateX)) {
+                        !isElementOnBoardEmpty(targetCoordinateY, targetCoordinateX)) {
                     return false;
                 }
 
@@ -248,34 +251,23 @@ public class Board {
 
         return true;
     }
-    private void rotatePieceWithLeftShifting(int nextState){
-        currentX-=1;
-        this.currentPieceMatrix = currentPiece.getShapeMatrix(nextState);
-        rotationState = nextState;
 
-    }
-    private void rotatePieceWithRightShifting(int nextState){
-        currentX+=1;
-        this.currentPieceMatrix = currentPiece.getShapeMatrix(nextState);
-        rotationState = nextState;
-
-    }
-    private boolean pieceCanBeRotatedWithRightShifting(int @NotNull [][] rotatedPiece){
+    private boolean pieceCanBeRotatedWithRightShifting(int @NotNull [][] rotatedPiece) {
         int rightShifting = 1;
         for (int i = 0; i < rotatedPiece.length; i++) {
             for (int j = 0; j < rotatedPiece[0].length; j++) {
-                int targetCoordinateY = currentY  + i;
+                int targetCoordinateY = currentY + i;
                 int targetCoordinateX = currentX + rightShifting + j;
                 if ((
                         rotatedPiece[i][j] == 1 &&
-                                (((targetCoordinateY >= BOARD_Y_SIZE) || (targetCoordinateY  < 0))
-                                        || ((targetCoordinateX >= BOARD_X_SIZE) || (targetCoordinateX  < 0)))
+                                (((targetCoordinateY >= BOARD_Y_SIZE) || (targetCoordinateY < 0))
+                                        || ((targetCoordinateX >= BOARD_X_SIZE) || (targetCoordinateX < 0)))
                 )) {
                     return false;
                 }
 
                 if (rotatedPiece[i][j] == 1 &&
-                        !isElementOnBoardEmpty(targetCoordinateY,targetCoordinateX)) {
+                        !isElementOnBoardEmpty(targetCoordinateY, targetCoordinateX)) {
                     return false;
                 }
 
@@ -284,7 +276,6 @@ public class Board {
 
         return true;
     }
-
 
     private boolean pieceReachedBottomOrOtherPiece() {
         int matrixSize = currentPieceMatrix.length;
@@ -300,8 +291,6 @@ public class Board {
             }
         }
         return false;
-
-
     }
 
     private void lockPieceToBoard() {
@@ -316,28 +305,74 @@ public class Board {
 
     }
 
-    private void newPieceSpawner() {
-        selectCurrentPieceRandomly();
-            rotationState = 0;
-            currentY = STARTY;
-            currentX = STARTX;
-            isGameOver();
+    public boolean holdPiece() {
+        if (currentPieceHoldable) {
+            if (holdPieceList.isEmpty()) {
+                holdPieceList.add(currentPiece);
+                currentPieceHoldable = false;
+                newPieceSpawnLoop();
+                holdActionCooldown+=1;
+                return true;
+            } else {
+                holdPieceList.add(currentPiece);
+                currentPieceHoldable = false;
+                newPieceSpawnLoop(holdPieceList.getFirst());
+                holdPieceList.remove(holdPieceList.getFirst());
+                holdActionCooldown+=1;
+                return true;
+            }
+        } else return false;
     }
 
-    private void isGameOver(){
+    private void newPieceSpawnLoop() {
+        if (holdActionCooldown %2 == 0){
+            currentPieceHoldable = true;
+        }
+        if (!currentPieceHoldable){
+            holdActionCooldown += 1;
+        }
+
+
+        randomPiecesListHandler();
+        currentPieceMatrix = currentPiece.getShapeMatrix(0);
+        rotationState = 0;
+        currentY = STARTY;
+        currentX = STARTX;
+        isGameOver();
+
+    }
+
+    private void newPieceSpawnLoop(Tetromino piece) {
+        if (holdActionCooldown %2 == 0){
+            currentPieceHoldable = true;
+        }
+        if (!currentPieceHoldable){
+            holdActionCooldown += 1;
+        }
+        currentPiece = piece;
+        currentPieceMatrix = currentPiece.getShapeMatrix(0);
+        rotationState = 0;
+        currentY = STARTY;
+        currentX = STARTX;
+        isGameOver();
+
+    }
+
+    private void isGameOver() {
         for (int i = 0; i < currentPieceMatrix.length; i++) {
             for (int j = 0; j < currentPieceMatrix[0].length; j++) {
                 if (currentPieceMatrix[i][j] == 1
-                && !getBoardElement(i+currentY, j+currentX ).name().equals("EMPTY")) {
+                        && !getBoardElement(i + currentY, j + currentX).name().equals("EMPTY")) {
                     isGameOver = true;
                 }
             }
         }
 
     }
-    public void boardClear(){
+
+    public void boardClear() {
         isFirstPieceOfTheGame = true;
         boardInit();
-        newPieceSpawner();
+        newPieceSpawnLoop();
     }
 }

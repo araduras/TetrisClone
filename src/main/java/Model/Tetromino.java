@@ -77,14 +77,6 @@ public enum Tetromino {
                             {0, 1, 0},
                             {1, 1, 0}
                     }
-
-
-
-
-
-
-
-
             },
             Style.COLOR_REVERSE_L_SHAPE
     ),
@@ -211,10 +203,11 @@ public enum Tetromino {
     private final int[][][] shapeMatrix;
     private final String colorStyle;
 
+
     private Tetromino(int[][][] shapeMatrix, String colorStyle) {
         this.shapeMatrix = shapeMatrix;
-
         this.colorStyle = colorStyle;
+
     }
 
     public int[][] getShapeMatrix(int rotationState) {
