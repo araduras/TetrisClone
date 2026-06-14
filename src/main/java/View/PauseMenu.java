@@ -8,9 +8,10 @@ import javafx.scene.layout.VBox;
 
 
 public class PauseMenu {
-    public static final VBox pauseMenu = new VBox(10);
+    public VBox pauseMenu;
 
     public PauseMenu(Runnable onResume,  Runnable onSettings, Runnable onRestart, Runnable onQuit){
+            this.pauseMenu = new VBox(10);
             pauseMenu.setAlignment(Pos.CENTER);
             pauseMenu.setStyle("-fx-background-color: rgba(34, 34, 34, 0.75);");
             pauseMenu.setFocusTraversable(true);
@@ -18,7 +19,6 @@ public class PauseMenu {
             pauseMenu.setOnKeyPressed(event -> {
                 if (event.getCode() == KeyCode.ESCAPE){
                     onResume.run();
-
                 }
             });
 

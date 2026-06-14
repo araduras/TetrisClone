@@ -4,7 +4,6 @@ import Controller.GameController;
 import Controller.RefreshGameUI;
 import Model.Board;
 import Model.Sizes;
-import Util.Sounds;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -18,14 +17,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-import static Controller.GameController.animationTimer;
+
 
 public class Tetris extends Application implements RefreshGameUI {
 
     GameController controller;
     BorderPane mainLayout;
-    VBox pauseMenu;
-    VBox settingsMenu;
+    PauseMenu pauseMenuComponent;
+    SettingsMenu settingsMenuComponent;
 
     static VBox leftColumn;
     static VBox rightColumn;
@@ -72,18 +71,23 @@ public class Tetris extends Application implements RefreshGameUI {
         gameStackPane = new StackPane();
         pauseMenuStackPane = new StackPane();
 
-        new PauseMenu(
+        this.pauseMenuComponent = new PauseMenu(
                 controller::resumeGame,
                 controller::openSettingsMenu,
                 controller::restartBoard,
                 controller::quitGame
         );
-        new SettingsMenu();
+        this.settingsMenuComponent = new SettingsMenu(
+                controller::adjustMusicVolume,
+                controller::adjustSoundEffectsVolume,
+                controller::settingsMenuBackBtn,
+                controller.getMusicVolume(),
+                controller.getSoundEffectsVolume()
+        );
 
-        this.pauseMenu = PauseMenu.pauseMenu;
-        this.settingsMenu = SettingsMenu.settingsMenu;
 
-        pauseMenuStackPane.getChildren().addAll(pauseMenu, settingsMenu);
+
+        pauseMenuStackPane.getChildren().addAll(pauseMenuComponent.pauseMenu, settingsMenuComponent.settingsMenu);
         pauseMenuStackPane.setVisible(false);
 
         primaryStage.setFullScreenExitHint("");
@@ -198,10 +202,10 @@ public class Tetris extends Application implements RefreshGameUI {
     @Override
     public void setPauseMenuVisible(boolean visible) {
 
-        pauseMenu.setVisible(visible);
+        pauseMenuComponent.pauseMenu.setVisible(visible);
         if (visible) {
             setPauseMenuOverlayVisible(true);
-            pauseMenu.requestFocus();
+            pauseMenuComponent.pauseMenu.requestFocus();
         } else {
             gameStackPane.requestFocus();
         }
@@ -214,9 +218,11 @@ public class Tetris extends Application implements RefreshGameUI {
 
     @Override
     public void setSettingsMenuVisible(boolean visible) {
-        settingsMenu.setVisible(visible);
+        settingsMenuComponent.settingsMenu.setVisible(visible);
         if (visible) {
-            settingsMenu.requestFocus();
+            settingsMenuComponent.settingsMenu.requestFocus();
+        } else {
+            pauseMenuComponent.pauseMenu.requestFocus();
         }
     }
 }
