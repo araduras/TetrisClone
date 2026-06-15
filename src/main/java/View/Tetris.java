@@ -18,8 +18,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-import java.util.Arrays;
-
 
 public class Tetris extends Application implements RefreshGameUI {
     static int DEFAULT_IN_GAME_BOX_SPACING = 10;

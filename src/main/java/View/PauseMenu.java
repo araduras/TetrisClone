@@ -19,6 +19,7 @@ public class PauseMenu {
             pauseMenu.setOnKeyPressed(event -> {
                 if (event.getCode() == KeyCode.ESCAPE){
                     onResume.run();
+                    event.consume();
                 }
             });
 

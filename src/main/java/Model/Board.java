@@ -110,7 +110,7 @@ public class Board {
     public void movePieceDown() {
         if (!pieceReachedBottomOrOtherPiece()) {
             changeCurrentPieceY(1);
-        } else {
+        }else {
             lockPieceToBoard();
             rowClear();
             currentPieceHoldable = true;
@@ -194,8 +194,12 @@ public class Board {
 
     public void hardDrop() {
         while (!pieceReachedBottomOrOtherPiece()) {
-            movePieceDown();
+            changeCurrentPieceY(1);
         }
+        lockPieceToBoard();
+        rowClear();
+        currentPieceHoldable = true;
+        newPieceSpawnLoop();
     }
 
 
@@ -303,7 +307,6 @@ public class Board {
         for (int i = 0; i < currentPieceMatrix.length; i++) {
             for (int j = 0; j < currentPieceMatrix[0].length; j++) {
                 if (currentPieceMatrix[i][j] == 1) {
-
                     setBoardElement(currentY + i, currentX + j, currentPiece);
                 }
             }
@@ -314,7 +317,6 @@ public class Board {
     public boolean holdPiece() {
         if (currentPieceHoldable) {
             if (holdPieceList.isEmpty()) {
-                System.out.println(Arrays.deepToString(this.currentPiece.getShapeMatrix()));
                 holdPieceList.add(currentPiece);
                 currentPieceHoldable = false;
                 newPieceSpawnLoop();
@@ -346,7 +348,6 @@ public class Board {
         currentY = STARTY;
         currentX = STARTX;
         isGameOver();
-
     }
 
     private void isGameOver() {
@@ -358,11 +359,11 @@ public class Board {
                 }
             }
         }
-
     }
 
 
     public void boardClear() {
+        isGameOver = false;
         isFirstPieceOfTheGame = true;
         boardInit();
         newPieceSpawnLoop();
