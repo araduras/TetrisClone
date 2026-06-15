@@ -1,14 +1,17 @@
 package Model;
 
+import Util.Util;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static Model.Sizes.BOARD_X_SIZE;
+import static Model.Sizes.BOARD_Y_SIZE;
+
 
 public class Board {
-    public static final int BOARD_Y_SIZE = 20;
-    public static final int BOARD_X_SIZE = 10;
+
     public static final int STARTY = 0;
     public static final int STARTX = 4;
     int rowsCleared = 0;
@@ -19,7 +22,6 @@ public class Board {
     public int[][] currentPieceMatrix;
     public boolean isGameOver = false;
     boolean currentPieceHoldable = true;
-    int holdActionCooldown = 0;
     boolean isFirstPieceOfTheGame;
     public ArrayList<Tetromino> holdPieceList = new ArrayList<>();
     ArrayList<Tetromino> randomPieces = Arrays.stream(Tetromino.values())
@@ -34,6 +36,9 @@ public class Board {
         newPieceSpawnLoop();
     }
 
+    public Util.BoardSize getBoardSize(){
+        return new Util.BoardSize(BOARD_Y_SIZE, BOARD_X_SIZE);
+    }
     public Tetromino getBoardElement(int y, int x) {
         return board[y][x];
     }
@@ -108,6 +113,7 @@ public class Board {
         } else {
             lockPieceToBoard();
             rowClear();
+            currentPieceHoldable = true;
             newPieceSpawnLoop();
         }
     }
@@ -308,31 +314,22 @@ public class Board {
     public boolean holdPiece() {
         if (currentPieceHoldable) {
             if (holdPieceList.isEmpty()) {
+                System.out.println(Arrays.deepToString(this.currentPiece.getShapeMatrix()));
                 holdPieceList.add(currentPiece);
                 currentPieceHoldable = false;
                 newPieceSpawnLoop();
-                holdActionCooldown+=1;
                 return true;
             } else {
                 holdPieceList.add(currentPiece);
                 currentPieceHoldable = false;
                 newPieceSpawnLoop(holdPieceList.getFirst());
                 holdPieceList.remove(holdPieceList.getFirst());
-                holdActionCooldown+=1;
                 return true;
             }
         } else return false;
     }
 
     private void newPieceSpawnLoop() {
-        if (holdActionCooldown %2 == 0){
-            currentPieceHoldable = true;
-        }
-        if (!currentPieceHoldable){
-            holdActionCooldown += 1;
-        }
-
-
         randomPiecesListHandler();
         currentPieceMatrix = currentPiece.getShapeMatrix(0);
         rotationState = 0;
@@ -343,12 +340,6 @@ public class Board {
     }
 
     private void newPieceSpawnLoop(Tetromino piece) {
-        if (holdActionCooldown %2 == 0){
-            currentPieceHoldable = true;
-        }
-        if (!currentPieceHoldable){
-            holdActionCooldown += 1;
-        }
         currentPiece = piece;
         currentPieceMatrix = currentPiece.getShapeMatrix(0);
         rotationState = 0;
@@ -369,6 +360,7 @@ public class Board {
         }
 
     }
+
 
     public void boardClear() {
         isFirstPieceOfTheGame = true;

@@ -4,6 +4,7 @@ import Controller.GameController;
 import Controller.RefreshGameUI;
 import Model.Board;
 import Model.Sizes;
+import Util.Util;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -17,34 +18,43 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+import java.util.Arrays;
 
 
 public class Tetris extends Application implements RefreshGameUI {
+    static int DEFAULT_IN_GAME_BOX_SPACING = 10;
+    static int DEFAULT_IN_GAME_COLUMN_SPACING = 1;
 
     GameController controller;
     BorderPane mainLayout;
     PauseMenu pauseMenuComponent;
     SettingsMenu settingsMenuComponent;
-
-    static VBox leftColumn;
-    static VBox rightColumn;
-    public static Board board;
-    public static StackPane gameStackPane;
-    public static StackPane pauseMenuStackPane;
+    GridPane holdPieceBoxGridPane;
+    public Board localBoard;
+    int BOARD_Y_SIZE;
+    int BOARD_X_SIZE;
+    GridPane nextPieceBoxGridPane;
+    private static VBox leftColumn;
+    private static VBox rightColumn;
+    private static StackPane gameStackPane;
+    private static StackPane pauseMenuStackPane;
     private static Rectangle[][] boardGridCells;
-
-    public static final VBox holdPieceBox = new VBox(30);
-    public static final VBox nextPieceBox = new VBox(30);
-    public static final VBox scoreBox = new VBox(30);
+    private static Rectangle[][] holdPieceBoxGridCells;
+    private static Rectangle [][] nextPieceBoxGridCells;
+    public static final VBox holdPieceBox = new VBox(DEFAULT_IN_GAME_BOX_SPACING);
+    public static final VBox nextPieceBox = new VBox(DEFAULT_IN_GAME_BOX_SPACING);
+    public static final VBox scoreBox = new VBox(DEFAULT_IN_GAME_BOX_SPACING);
     private static final GridPane gridPane = new GridPane();
     private static final StackPane firstLayerBackgroundStackPane = new StackPane();
+
+
 
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage){
         try {
             firstLayerBackgroundStackPane.setStyle(Style.DEFAULT_GRAY_COLOR);
             gameSetup(primaryStage);
@@ -55,9 +65,8 @@ public class Tetris extends Application implements RefreshGameUI {
             primaryStage.show();
             primaryStage.setFullScreen(true);
 
-            scene.setOnKeyPressed(event -> {
-                controller.handleKeyPress(event);
-            });
+            scene.setOnKeyPressed(event ->
+                    controller.handleKeyPress(event));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -65,8 +74,8 @@ public class Tetris extends Application implements RefreshGameUI {
     }
 
     private void gameSetup(Stage primaryStage) {
-        board = new Board();
-        controller = new GameController(board, this);
+        localBoard = new Board();
+        this.controller = new GameController(localBoard, this);
 
         gameStackPane = new StackPane();
         pauseMenuStackPane = new StackPane();
@@ -86,6 +95,9 @@ public class Tetris extends Application implements RefreshGameUI {
         );
 
 
+        Util.BoardSize boardSize = controller.getBoardSize();
+        BOARD_Y_SIZE = boardSize.BOARD_Y_SIZE();
+        BOARD_X_SIZE = boardSize.BOARD_X_SIZE();
 
         pauseMenuStackPane.getChildren().addAll(pauseMenuComponent.pauseMenu, settingsMenuComponent.settingsMenu);
         pauseMenuStackPane.setVisible(false);
@@ -116,7 +128,7 @@ public class Tetris extends Application implements RefreshGameUI {
 
     private void leftColumnSetup() {
         //Left column
-        leftColumn = new VBox(10);
+        leftColumn = new VBox(DEFAULT_IN_GAME_COLUMN_SPACING);
         leftColumn.setAlignment(Pos.TOP_LEFT);
         leftColumn.setStyle(Style.DEFAULT_GRAY_COLOR);
         leftColumn.setPadding(new Insets(20));
@@ -132,7 +144,7 @@ public class Tetris extends Application implements RefreshGameUI {
 
     private void rightColumnSetup() {
         //Right column
-        rightColumn = new VBox(10);
+        rightColumn = new VBox(DEFAULT_IN_GAME_COLUMN_SPACING);
         rightColumn.setAlignment(Pos.TOP_RIGHT);
         rightColumn.setStyle(Style.DEFAULT_GRAY_COLOR);
         rightColumn.setPrefSize(Sizes.idealColumnWidth, Sizes.idealColumHeight);
@@ -148,34 +160,44 @@ public class Tetris extends Application implements RefreshGameUI {
 
     private void boxesRightSideSetup() {
         nextPieceBox.setMaxSize(100, 100);
+        nextPieceBoxGridPane = new GridPane();
+        nextPieceBoxGridCells = new Rectangle[20][6];
         scoreBox.setMaxSize(100, 100);
-
-
+        for (int i = 0; i < nextPieceBoxGridCells.length; i++) {
+            for (int j = 0; j < nextPieceBoxGridCells[0].length; j++) {
+                Rectangle baseGrid = new Rectangle(30, 30);
+                baseGrid.setStyle(Style.baseGridStyleWithBorder);
+                nextPieceBoxGridPane.add(baseGrid,j,i);
+                nextPieceBoxGridCells[i][j] = baseGrid;
+            }
+        }
+        nextPieceBox.setAlignment(Pos.CENTER_LEFT);
+        nextPieceBox.getChildren().add(nextPieceBoxGridPane);
     }
+
     private void boxesLeftSideSetup() {
         holdPieceBox.setMaxSize(100, 100);
-        GridPane holdPieceBoxGridPane = new GridPane();
-        Rectangle[][] holdPieceBoxGridCells = new Rectangle[6][6];
-
+        holdPieceBoxGridPane = new GridPane();
+         holdPieceBoxGridCells = new Rectangle[6][7];
 
         for (int i = 0; i < holdPieceBoxGridCells.length; i++) {
             for (int j = 0; j < holdPieceBoxGridCells[0].length; j++) {
-                Rectangle baseGrid = new Rectangle(40, 40);
+                Rectangle baseGrid = new Rectangle(30, 30);
                 baseGrid.setStyle(Style.baseGridStyleWithBorder);
-                holdPieceBoxGridPane.add(baseGrid,i,j);
+                holdPieceBoxGridPane.add(baseGrid,j,i);
                 holdPieceBoxGridCells[i][j] = baseGrid;
             }
         }
 
-        holdPieceBox.setAlignment(Pos.CENTER);
-holdPieceBox.getChildren().add(holdPieceBoxGridPane);
+        holdPieceBox.setAlignment(Pos.CENTER_RIGHT);
+        holdPieceBox.getChildren().add(holdPieceBoxGridPane);
 
     }
 
     private void gridSetup() {
-        boardGridCells = new Rectangle[Board.BOARD_Y_SIZE][Board.BOARD_X_SIZE];
-        for (int i = 0; i < Board.BOARD_Y_SIZE; i++) {
-            for (int j = 0; j < Board.BOARD_X_SIZE; j++) {
+        boardGridCells = new Rectangle[BOARD_Y_SIZE][BOARD_X_SIZE];
+        for (int i = 0; i < BOARD_Y_SIZE; i++) {
+            for (int j = 0; j < BOARD_X_SIZE; j++) {
                 Rectangle baseGrid = new Rectangle(30, 30);
                 baseGrid.setStyle(Style.baseGridStyleWithBorder);
                 gridPane.add(baseGrid, j, i);
@@ -188,37 +210,39 @@ holdPieceBox.getChildren().add(holdPieceBoxGridPane);
 
 
     public void refreshUI() {
-        if (board == null || board.currentPieceMatrix == null) {
-            return;
+        //Board
+        for (int y = 0; y < BOARD_Y_SIZE; y++) {
+            for (int x = 0; x < BOARD_X_SIZE; x++) {
+                boardGridCells[y][x].setStyle(controller.getBoardElement(y, x).getStyle());
+            }
         }
-        int[][] currentPieceMatrix = board.currentPieceMatrix;
-        int currentPieceMatrixHeight = currentPieceMatrix.length;
-        int currentPieceMatrixWidth = currentPieceMatrix[0].length;
-        for (int i = 0; i < Board.BOARD_Y_SIZE; i++) {
-            for (int j = 0; j < Board.BOARD_X_SIZE; j++) {
-                if (!board.getBoardElement(i, j).name().equals("EMPTY")) {
-                    //Locked on piece
-                    boardGridCells[i][j].setStyle(board.getBoardElement(i, j).getStyle());
-                } else if (
-                        (i - board.currentY >= 0 && i - board.currentY < currentPieceMatrixHeight)
-                                && (j - board.currentX >= 0 && j - board.currentX < currentPieceMatrixWidth)
-                                && (currentPieceMatrix[i - board.currentY][j - board.currentX] == 1)
-                ) {
-                    //Active falling piece
-                    boardGridCells[i][j].setStyle(board.currentPiece.getStyle());
-                } else {
-                    //Empty cells
-                    boardGridCells[i][j].setStyle(Style.emptyGridCellStyle);
-
+        //Hold
+        int holdGridOffsetY = 2;
+        int holdGridOffsetX = 2;
+        if(!controller.isHoldListNull()){
+            for (int i = 0; i < holdPieceBoxGridCells.length; i++) {
+                for (int j = 0; j < holdPieceBoxGridCells[0].length; j++) {
+                    holdPieceBoxGridCells[i][j].setStyle(Style.baseGridStyleWithBorder);
+                }
+            }
+            for (int y = 0; y < controller.getHoldPieceSize(); y++) {
+                for (int x = 0; x < controller.getHoldPieceSize(); x++) {
+                    if (controller.getHoldPieceMatrixAt(y,x)){
+                        holdPieceBoxGridCells[holdGridOffsetY+y][holdGridOffsetX+x]
+                                .setStyle(controller.getPieceInHold().getStyle());
+                    }
+                    else {holdPieceBoxGridCells[holdGridOffsetY+y][holdGridOffsetX+x]
+                            .setStyle(Style.baseGridStyleWithBorder);}
                 }
             }
         }
+        //NextPiece
+
 
     }
 
     @Override
     public void setPauseMenuVisible(boolean visible) {
-
         pauseMenuComponent.pauseMenu.setVisible(visible);
         if (visible) {
             setPauseMenuOverlayVisible(true);
@@ -242,4 +266,6 @@ holdPieceBox.getChildren().add(holdPieceBoxGridPane);
             pauseMenuComponent.pauseMenu.requestFocus();
         }
     }
+
+
 }

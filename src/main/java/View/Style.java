@@ -3,7 +3,7 @@ package View;
 public class Style {
     //Shapes
     public static final String COLOR_BLOCK = "#ffdf00"; // Yellow
-    public static final String COLOR_EMPTY = "#333333"; // Grey
+    public static final String COLOR_EMPTY = "-fx-fill: #333333; "; // Grey
     public static final String COLOR_I_SHAPE = "#00FFFF"; //Cyan
     public static final String COLOR_T_SHAPE = "#800080"; //Purple
     public static final String COLOR_L_SHAPE = "#FF7F00"; //Orange

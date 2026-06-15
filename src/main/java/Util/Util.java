@@ -10,7 +10,7 @@ public class Util {
     static final int defaultSliderWidth = 500;
     static final int defaultSliderHeight = 5;
 
-
+    public record BoardSize(int BOARD_Y_SIZE, int BOARD_X_SIZE) {}
     public static Label placeHolderLabel(){
         Label label = new Label("placeHolderText");
         label.setStyle(Style.LARGE_TEXT_STYLE);

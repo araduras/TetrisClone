@@ -6,20 +6,24 @@ public enum Tetromino {
     BLOCK(new int[][][]
             {
                     {
-                            {1, 1},
-                            {1, 1},
+                            {0, 1, 1, 0},
+                            {0, 1, 1, 0},
+                            {0, 0, 0, 0}
                     },
                     {
-                            {1, 1},
-                            {1, 1},
+                            {0, 1, 1, 0},
+                            {0, 1, 1, 0},
+                            {0, 0, 0, 0}
                     },
                     {
-                            {1, 1},
-                            {1, 1},
+                            {0, 1, 1, 0},
+                            {0, 1, 1, 0},
+                            {0, 0, 0, 0}
                     },
                     {
-                            {1, 1},
-                            {1, 1},
+                            {0, 1, 1, 0},
+                            {0, 1, 1, 0},
+                            {0, 0, 0, 0}
                     },
 
             },
@@ -93,14 +97,14 @@ public enum Tetromino {
                             {0, 1, 0}
                     },
                     {
+                            {0, 0, 0},
                             {1, 1, 0},
-                            {0, 1, 1},
-                            {0, 0, 0}
+                            {0, 1, 1}
                     },
                     {
-                            {0, 0, 1},
-                            {0, 1, 1},
-                            {0, 1, 0}
+                            {0, 1, 0},
+                            {1, 1, 0},
+                            {1, 0, 0}
                     }
 
             },
@@ -120,15 +124,15 @@ public enum Tetromino {
                             {0, 0, 1}
                     },
                     {
+                            {0, 0, 0},
                             {0, 1, 1},
-                            {1, 1, 0},
-                            {0, 0, 0}
+                            {1, 1, 0}
                     },
 
                     {
-                            {0, 1, 0},
-                            {0, 1, 1},
-                            {0, 0, 1}
+                            {1, 0, 0},
+                            {1, 1, 0},
+                            {0, 1, 0}
                     }
 
 
@@ -213,6 +217,10 @@ public enum Tetromino {
     public int[][] getShapeMatrix(int rotationState) {
         return this.shapeMatrix[rotationState];
     }
+    public int[][][] getShapeMatrix() {
+        return this.shapeMatrix;
+    }
+
 
     public String getStyle() {
         return "-fx-fill: " + this.colorStyle + "; " + Style.DEFAULT_BORDER_STYLE;

@@ -1,10 +1,14 @@
 package Controller;
 
 import Model.Board;
+import Model.Tetromino;
 import Model.Time;
 import Util.Sounds;
+import Util.Util;
 import javafx.animation.AnimationTimer;
 import javafx.scene.input.KeyEvent;
+
+import java.util.Arrays;
 
 public class GameController {
     long lastUpdate = 0;
@@ -161,4 +165,49 @@ public class GameController {
         currentGameState = gameState;
     }
 
+    public Tetromino getPieceInHold(){
+        return board.holdPieceList.getFirst();
+    }
+
+
+    public Util.BoardSize getBoardSize(){
+        return board.getBoardSize();
+    }
+
+
+    public Tetromino getBoardElement(int y, int x) {
+        int[][] currentPieceMatrix = board.currentPieceMatrix;
+        int currentPieceMatrixHeight = currentPieceMatrix.length;
+        int currentPieceMatrixWidth = currentPieceMatrix[0].length;
+        if(y - board.currentY >= 0 && y - board.currentY < currentPieceMatrixHeight
+                && (x - board.currentX >= 0 && x - board.currentX < currentPieceMatrixWidth)
+                && (currentPieceMatrix[y - board.currentY][x - board.currentX] == 1))
+        {
+            return board.currentPiece;
+        }
+        else {return board.getBoardElement(y,x);}
+
+
+    }
+    public int[][] getCurrentPieceMatrix(){
+        return board.currentPieceMatrix;
+    }
+    public boolean isHoldListNull(){
+        return board.holdPieceList.isEmpty();
+    }
+public int getHoldPieceSize(){
+        return board.holdPieceList.getFirst().getShapeMatrix()[0].length;
+}
+
+    public boolean getHoldPieceMatrixAt(int y, int x) {
+        if (y < board.holdPieceList.getFirst().getShapeMatrix()[0].length){
+            int[][] holdPieceMatrix = board.holdPieceList
+                    .getFirst()
+                    .getShapeMatrix(0);
+            System.out.println(Arrays.deepToString(holdPieceMatrix));
+
+            return holdPieceMatrix[y][x] == 1;
+        }
+        else return false;
+    }
 }
