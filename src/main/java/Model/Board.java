@@ -27,7 +27,7 @@ public class Board {
     ArrayList<Tetromino> randomPieces = Arrays.stream(Tetromino.values())
             .filter(piece -> !piece.equals(Tetromino.EMPTY))
             .collect(Collectors.toCollection(ArrayList::new));
-    ArrayList<Tetromino> upComingPieces = new ArrayList<>();
+    public ArrayList<Tetromino> upComingPieces = new ArrayList<>();
     final Tetromino[][] board =
             new Tetromino[BOARD_Y_SIZE][BOARD_X_SIZE];
 

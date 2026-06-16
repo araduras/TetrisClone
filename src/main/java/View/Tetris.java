@@ -5,6 +5,7 @@ import Controller.RefreshGameUI;
 import Model.Board;
 import Model.Sizes;
 import Util.Util;
+import View.Utils.GridUtils;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -22,7 +23,6 @@ import javafx.stage.Stage;
 public class Tetris extends Application implements RefreshGameUI {
     static int DEFAULT_IN_GAME_BOX_SPACING = 10;
     static int DEFAULT_IN_GAME_COLUMN_SPACING = 1;
-
     GameController controller;
     BorderPane mainLayout;
     PauseMenu pauseMenuComponent;
@@ -37,8 +37,8 @@ public class Tetris extends Application implements RefreshGameUI {
     private static StackPane gameStackPane;
     private static StackPane pauseMenuStackPane;
     private static Rectangle[][] boardGridCells;
-    private static Rectangle[][] holdPieceBoxGridCells;
-    private static Rectangle [][] nextPieceBoxGridCells;
+    private Rectangle[][] holdPieceBoxGridCells;
+    private Rectangle[][] nextPieceBoxGridCells;
     public static final VBox holdPieceBox = new VBox(DEFAULT_IN_GAME_BOX_SPACING);
     public static final VBox nextPieceBox = new VBox(DEFAULT_IN_GAME_BOX_SPACING);
     public static final VBox scoreBox = new VBox(DEFAULT_IN_GAME_BOX_SPACING);
@@ -46,13 +46,12 @@ public class Tetris extends Application implements RefreshGameUI {
     private static final StackPane firstLayerBackgroundStackPane = new StackPane();
 
 
-
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage primaryStage){
+    public void start(Stage primaryStage) {
         try {
             firstLayerBackgroundStackPane.setStyle(Style.DEFAULT_GRAY_COLOR);
             gameSetup(primaryStage);
@@ -108,7 +107,7 @@ public class Tetris extends Application implements RefreshGameUI {
         leftColumnSetup();
         rightColumnSetup();
         mainLayoutSetup(leftColumn, rightColumn);
-        gridSetup();
+        gameGridSetup();
 
         gameStackPane.getChildren().addAll(gridPane, pauseMenuStackPane);
     }
@@ -156,19 +155,19 @@ public class Tetris extends Application implements RefreshGameUI {
         rightColumn.getChildren().addAll(label, nextPieceBox);
     }
 
+
     private void boxesRightSideSetup() {
         nextPieceBox.setMaxSize(100, 100);
         nextPieceBoxGridPane = new GridPane();
-        nextPieceBoxGridCells = new Rectangle[20][6];
+        nextPieceBoxGridCells =
+                GridUtils.gridBuilder(
+                        nextPieceBoxGridPane,
+                        15,
+                        6,
+                        30,
+                        30,
+                        Style.baseGridStyleWithBorder);
         scoreBox.setMaxSize(100, 100);
-        for (int i = 0; i < nextPieceBoxGridCells.length; i++) {
-            for (int j = 0; j < nextPieceBoxGridCells[0].length; j++) {
-                Rectangle baseGrid = new Rectangle(30, 30);
-                baseGrid.setStyle(Style.baseGridStyleWithBorder);
-                nextPieceBoxGridPane.add(baseGrid,j,i);
-                nextPieceBoxGridCells[i][j] = baseGrid;
-            }
-        }
         nextPieceBox.setAlignment(Pos.CENTER_LEFT);
         nextPieceBox.getChildren().add(nextPieceBoxGridPane);
     }
@@ -176,32 +175,29 @@ public class Tetris extends Application implements RefreshGameUI {
     private void boxesLeftSideSetup() {
         holdPieceBox.setMaxSize(100, 100);
         holdPieceBoxGridPane = new GridPane();
-         holdPieceBoxGridCells = new Rectangle[6][7];
-
-        for (int i = 0; i < holdPieceBoxGridCells.length; i++) {
-            for (int j = 0; j < holdPieceBoxGridCells[0].length; j++) {
-                Rectangle baseGrid = new Rectangle(30, 30);
-                baseGrid.setStyle(Style.baseGridStyleWithBorder);
-                holdPieceBoxGridPane.add(baseGrid,j,i);
-                holdPieceBoxGridCells[i][j] = baseGrid;
-            }
-        }
-
+        holdPieceBoxGridCells =
+                GridUtils.gridBuilder(
+                        holdPieceBoxGridPane,
+                        6,
+                        7,
+                        30,
+                        30,
+                        Style.baseGridStyleWithBorder);
         holdPieceBox.setAlignment(Pos.CENTER_RIGHT);
         holdPieceBox.getChildren().add(holdPieceBoxGridPane);
 
     }
 
-    private void gridSetup() {
-        boardGridCells = new Rectangle[BOARD_Y_SIZE][BOARD_X_SIZE];
-        for (int i = 0; i < BOARD_Y_SIZE; i++) {
-            for (int j = 0; j < BOARD_X_SIZE; j++) {
-                Rectangle baseGrid = new Rectangle(30, 30);
-                baseGrid.setStyle(Style.baseGridStyleWithBorder);
-                gridPane.add(baseGrid, j, i);
-                boardGridCells[i][j] = baseGrid;
-            }
-        }
+    private void gameGridSetup() {
+        boardGridCells =
+                GridUtils.gridBuilder(
+                        gridPane,
+                        BOARD_Y_SIZE,
+                        BOARD_X_SIZE,
+                        30,
+                        30,
+                        Style.baseGridStyleWithBorder
+                );
         gridPane.setAlignment(Pos.CENTER);
         gridPane.setStyle(Style.DEFAULT_GRAY_COLOR);
     }
@@ -217,7 +213,7 @@ public class Tetris extends Application implements RefreshGameUI {
         //Hold
         int holdGridOffsetY = 2;
         int holdGridOffsetX = 2;
-        if(!controller.isHoldListNull()){
+        if (!controller.isHoldListNull()) {
             for (int i = 0; i < holdPieceBoxGridCells.length; i++) {
                 for (int j = 0; j < holdPieceBoxGridCells[0].length; j++) {
                     holdPieceBoxGridCells[i][j].setStyle(Style.baseGridStyleWithBorder);
@@ -225,18 +221,32 @@ public class Tetris extends Application implements RefreshGameUI {
             }
             for (int y = 0; y < controller.getHoldPieceSize(); y++) {
                 for (int x = 0; x < controller.getHoldPieceSize(); x++) {
-                    if (controller.getHoldPieceMatrixAt(y,x)){
-                        holdPieceBoxGridCells[holdGridOffsetY+y][holdGridOffsetX+x]
+                    if (controller.getHoldPieceMatrixAt(y, x)) {
+                        holdPieceBoxGridCells[holdGridOffsetY + y][holdGridOffsetX + x]
                                 .setStyle(controller.getPieceInHold().getStyle());
+                    } else {
+                        holdPieceBoxGridCells[holdGridOffsetY + y][holdGridOffsetX + x]
+                                .setStyle(Style.baseGridStyleWithBorder);
                     }
-                    else {holdPieceBoxGridCells[holdGridOffsetY+y][holdGridOffsetX+x]
-                            .setStyle(Style.baseGridStyleWithBorder);}
                 }
             }
         }
         //NextPiece
-
-
+        int nextPieceBoxGridOffsetY = 1;
+        int nextPieceBoxGridOffsetX = 1;
+        int drawnPieceEndedAt = 0;
+        GridUtils.gridClear(nextPieceBoxGridCells);
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < nextPieceBoxGridCells[0].length; j++) {
+                nextPieceBoxGridCells[drawnPieceEndedAt][j].setStyle(Style.baseGridStyleWithBorder);
+            }
+            drawnPieceEndedAt += 1;
+            drawnPieceEndedAt = GridUtils.pieceOnGridRenderer(
+                    nextPieceBoxGridCells,
+                    drawnPieceEndedAt,
+                    nextPieceBoxGridOffsetX,
+                    controller.getNextPieceInHold(i));
+        }
     }
 
     @Override
@@ -249,12 +259,10 @@ public class Tetris extends Application implements RefreshGameUI {
             gameStackPane.requestFocus();
         }
     }
-
     @Override
     public void setPauseMenuOverlayVisible(boolean visible) {
         pauseMenuStackPane.setVisible(visible);
     }
-
     @Override
     public void setSettingsMenuVisible(boolean visible) {
         settingsMenuComponent.settingsMenu.setVisible(visible);
@@ -264,6 +272,4 @@ public class Tetris extends Application implements RefreshGameUI {
             pauseMenuComponent.pauseMenu.requestFocus();
         }
     }
-
-
 }

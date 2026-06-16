@@ -15,7 +15,6 @@ public class Util {
         Label label = new Label("placeHolderText");
         label.setStyle(Style.LARGE_TEXT_STYLE);
         return label;
-
     }
 
    public static Button defaultBackBtn(){
