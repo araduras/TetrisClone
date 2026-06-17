@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/TetrisClone.iml" filepath="$PROJECT_DIR$/TetrisClone.iml" />
+      <module fileurl="file://$PROJECT_DIR$/XGrid.iml" filepath="$PROJECT_DIR$/XGrid.iml" />
     </modules>
   </component>
 </project>
