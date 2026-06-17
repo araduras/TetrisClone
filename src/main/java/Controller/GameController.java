@@ -13,27 +13,35 @@ public class GameController {
     public static GameState currentGameState = GameState.DEFAULT;
     public AnimationTimer animationTimer;
     public static Sounds gameMusic = new Sounds();
-    private boolean pieceCanBeHeld;
 
-
-    public static long CURRENT_GAME_SPEED = Time.DEFAULT_GAME_SPEED;
+    public static Time gameSpeed = new Time();
+    int level = 0;
+    long CURRENT_GAME_SPEED = gameSpeed.gameSpeed(level);
     Board board;
     RefreshGameUI ui;
+
 
     public GameController(Board board, RefreshGameUI ui) {
         setGameState(GameState.In_Game);
 
         this.board = board;
         this.ui = ui;
+
+
         animationTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 long timeSinceLastUpdate = now - lastUpdate;
                 if (timeSinceLastUpdate >= CURRENT_GAME_SPEED) {
                     board.movePieceDown();
+
                     ui.refreshUI();
                     if (board.isGameOver) {
                         this.stop();
+                    }
+                    if (board.getLevel()>=level){
+                        level = board.getLevel();
+                        CURRENT_GAME_SPEED = gameSpeed.gameSpeed(level);
                     }
                     lastUpdate = now;
                 }
@@ -213,5 +221,9 @@ public class GameController {
                     .getShapeMatrix(0);
             return nextPieceMatrix[y][x] == 1;
         } else return false;
+    }
+
+    public int getLevel(){
+       return board.getLevel();
     }
 }

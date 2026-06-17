@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 
 
 public class Tetris extends Application implements RefreshGameUI {
+    Label levelLabel;
     static int DEFAULT_IN_GAME_BOX_SPACING = 10;
     static int DEFAULT_IN_GAME_COLUMN_SPACING = 1;
     GameController controller;
@@ -132,11 +133,13 @@ public class Tetris extends Application implements RefreshGameUI {
         leftColumn.setPrefSize(Sizes.idealColumnWidth, Sizes.idealColumHeight);
         leftColumn.setMaxSize(Sizes.idealColumnWidth, Sizes.idealColumHeight);
 
-        Label holdTitle = new Label("HOLD");
-        holdTitle.setStyle(Style.LARGE_TEXT_STYLE);
-        holdTitle.setAlignment(Pos.CENTER);
+        Label holdLabel = new Label("HOLD");
+         levelLabel = new Label(String.valueOf(controller.getLevel()));
 
-        leftColumn.getChildren().addAll(holdTitle, holdPieceBox, scoreBox);
+        holdLabel.setStyle(Style.LARGE_TEXT_STYLE);
+        holdLabel.setAlignment(Pos.CENTER);
+
+        leftColumn.getChildren().addAll(holdLabel, holdPieceBox, scoreBox, levelLabel);
     }
 
     private void rightColumnSetup() {
@@ -148,11 +151,11 @@ public class Tetris extends Application implements RefreshGameUI {
         rightColumn.setMaxSize(Sizes.idealColumnWidth, Sizes.idealColumHeight);
         rightColumn.setPadding(new Insets(20));
 
-        Label label = new Label("Next");
-        label.setStyle(Style.LARGE_TEXT_STYLE);
-        label.setAlignment(Pos.CENTER);
+        Label nextLabel = new Label("Next");
+        nextLabel.setStyle(Style.LARGE_TEXT_STYLE);
+        nextLabel.setAlignment(Pos.CENTER);
 
-        rightColumn.getChildren().addAll(label, nextPieceBox);
+        rightColumn.getChildren().addAll(nextLabel, nextPieceBox);
     }
 
 
@@ -232,7 +235,6 @@ public class Tetris extends Application implements RefreshGameUI {
             }
         }
         //NextPiece
-        int nextPieceBoxGridOffsetY = 1;
         int nextPieceBoxGridOffsetX = 1;
         int drawnPieceEndedAt = 0;
         GridUtils.gridClear(nextPieceBoxGridCells);
@@ -247,6 +249,9 @@ public class Tetris extends Application implements RefreshGameUI {
                     nextPieceBoxGridOffsetX,
                     controller.getNextPieceInHold(i));
         }
+        levelLabel.setText(String.valueOf(controller.getLevel()));
+        levelLabel.setStyle(Style.LARGE_TEXT_STYLE);
+        levelLabel.setAlignment(Pos.CENTER);
     }
 
     @Override

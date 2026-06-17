@@ -15,6 +15,7 @@ public class Board {
     public static final int STARTY = 0;
     public static final int STARTX = 4;
     int rowsCleared = 0;
+    int level = 0;
     private int rotationState = 2;
     public int currentY;
     public int currentX;
@@ -36,9 +37,10 @@ public class Board {
         newPieceSpawnLoop();
     }
 
-    public Util.BoardSize getBoardSize(){
+    public Util.BoardSize getBoardSize() {
         return new Util.BoardSize(BOARD_Y_SIZE, BOARD_X_SIZE);
     }
+
     public Tetromino getBoardElement(int y, int x) {
         return board[y][x];
     }
@@ -105,12 +107,15 @@ public class Board {
                 i++;
             }
         }
+        if (rowsCleared > 0 && rowsCleared/10 > level ) {
+            level++;
+        }
     }
 
     public void movePieceDown() {
         if (!pieceReachedBottomOrOtherPiece()) {
             changeCurrentPieceY(1);
-        }else {
+        } else {
             lockPieceToBoard();
             rowClear();
             currentPieceHoldable = true;
@@ -123,10 +128,8 @@ public class Board {
             for (int j = 0; j < pieceToBeMovedLeft[0].length; j++) {
                 if (pieceToBeMovedLeft[i][j] == 1) {
                     int targetX = currentX + j - 1;
-                    if (targetX == -1) {
-                        return false;
-                    }
                     if ((targetX < 0)
+                            || targetX >= BOARD_X_SIZE
                             || !getBoardElement(currentY + i, targetX).name().equals("EMPTY")) {
                         return false;
                     }
@@ -144,7 +147,9 @@ public class Board {
                     if (targetX == BOARD_X_SIZE) {
                         return false;
                     }
-                    if ((targetX >= BOARD_X_SIZE) || !getBoardElement(currentY + i, targetX).name().equals("EMPTY")) {
+                    if ((targetX >= BOARD_X_SIZE)
+                            || targetX < 0
+                            ||!getBoardElement(currentY + i, targetX).name().equals("EMPTY")) {
                         return false;
                     }
                 }
@@ -367,5 +372,9 @@ public class Board {
         isFirstPieceOfTheGame = true;
         boardInit();
         newPieceSpawnLoop();
+    }
+
+    public int getLevel() {
+        return level;
     }
 }
