@@ -70,8 +70,11 @@ public class MainGame extends Application implements RefreshGameUI {
             Scene scene = new Scene(firstLayerBackgroundStackPane, 650, 650);
 
             primaryStage.setScene(scene);
-            primaryStage.show();
+
             primaryStage.setFullScreen(true);
+
+            primaryStage.show();
+
 
             scene.setOnKeyPressed(event ->
                     controller.handleKeyPress(event));
