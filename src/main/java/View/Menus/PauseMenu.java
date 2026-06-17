@@ -1,4 +1,4 @@
-package View;
+package View.Menus;
 
 import View.Utils.Style;
 import javafx.geometry.Pos;

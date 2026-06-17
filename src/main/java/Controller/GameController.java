@@ -35,6 +35,12 @@ public class GameController {
         animationTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
+                if (board.isGameOver) {
+                    this.stop();
+                    setGameState(GameState.Game_Over);
+                    ui.setGameOverMenuVisible(true);
+
+                }
                 long timeSinceLastUpdate = now - lastUpdate;
                 if (timeSinceLastUpdate >= CURRENT_GAME_SPEED) {
                     if (board.movePieceDownByOne(board.pieceReachedBottomOrOtherPiece())) {
@@ -49,9 +55,7 @@ public class GameController {
                         }
                     }
 
-                    if (board.isGameOver) {
-                        this.stop();
-                    }
+
                     if (board.getLevel() >= level) {
                         level = board.getLevel();
                         CURRENT_GAME_SPEED = gameSpeed.gameSpeed(level);
@@ -160,6 +164,13 @@ public class GameController {
         animationTimer.start();
         ui.refreshUI();
     }
+    public void restartBoardOnGameOver() {
+        restartBoard();
+        ui.setGameOverMenuVisible(false);
+        setGameState(GameState.In_Game);
+    }
+
+
 
     public void quitGame() {
         System.exit(0);
@@ -269,4 +280,5 @@ public class GameController {
     public int getScore(){
         return currentScore;
     }
+
 }

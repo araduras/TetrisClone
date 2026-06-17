@@ -3,6 +3,9 @@ package View;
 import Controller.GameController;
 import Controller.RefreshGameUI;
 import Model.Board;
+import View.Menus.GameOverMenu;
+import View.Menus.PauseMenu;
+import View.Menus.SettingsMenu;
 import View.Utils.Sizes;
 import Util.Util;
 import View.Utils.GridUtils;
@@ -32,6 +35,7 @@ public class MainGame extends Application implements RefreshGameUI {
     BorderPane mainLayout;
     PauseMenu pauseMenuComponent;
     SettingsMenu settingsMenuComponent;
+    GameOverMenu gameOverMenuComponent;
     GridPane holdPieceBoxGridPane;
     public Board localBoard;
     int BOARD_Y_SIZE;
@@ -40,7 +44,9 @@ public class MainGame extends Application implements RefreshGameUI {
     private static VBox leftColumn;
     private static VBox rightColumn;
     private static StackPane gameStackPane;
+    private static StackPane gameOverStackPane;
     private static StackPane pauseMenuStackPane;
+
     private static Rectangle[][] boardGridCells;
     private Rectangle[][] holdPieceBoxGridCells;
     private Rectangle[][] nextPieceBoxGridCells;
@@ -80,6 +86,7 @@ public class MainGame extends Application implements RefreshGameUI {
         this.controller = new GameController(localBoard, this);
 
         gameStackPane = new StackPane();
+        gameOverStackPane = new StackPane();
         pauseMenuStackPane = new StackPane();
 
         this.pauseMenuComponent = new PauseMenu(
@@ -95,14 +102,23 @@ public class MainGame extends Application implements RefreshGameUI {
                 controller.getMusicVolume(),
                 controller.getSoundEffectsVolume()
         );
+        this.gameOverMenuComponent = new GameOverMenu(
+                controller::restartBoardOnGameOver,
+                controller::quitGame
+        );
 
 
         Util.BoardSize boardSize = controller.getBoardSize();
         BOARD_Y_SIZE = boardSize.BOARD_Y_SIZE();
         BOARD_X_SIZE = boardSize.BOARD_X_SIZE();
 
-        pauseMenuStackPane.getChildren().addAll(pauseMenuComponent.pauseMenu, settingsMenuComponent.settingsMenu);
+        pauseMenuStackPane.getChildren().addAll(
+                pauseMenuComponent.pauseMenu,
+                settingsMenuComponent.settingsMenu);
         pauseMenuStackPane.setVisible(false);
+
+        gameOverStackPane.getChildren().add(gameOverMenuComponent.gameOverMenu);
+        gameOverStackPane.setVisible(false);
 
         primaryStage.setFullScreenExitHint("");
         primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
@@ -114,7 +130,7 @@ public class MainGame extends Application implements RefreshGameUI {
         mainLayoutSetup(leftColumn, rightColumn);
         gameGridSetup();
 
-        gameStackPane.getChildren().addAll(gridPane, pauseMenuStackPane);
+        gameStackPane.getChildren().addAll(gridPane, pauseMenuStackPane, gameOverMenuComponent.gameOverMenu);
         controller.startGameLoop();
     }
 
@@ -307,5 +323,10 @@ public class MainGame extends Application implements RefreshGameUI {
         } else {
             pauseMenuComponent.pauseMenu.requestFocus();
         }
+    }
+    @Override
+    public void setGameOverMenuVisible(boolean visible){
+        gameOverStackPane.setVisible(visible);
+        gameOverMenuComponent.gameOverMenu.setVisible(visible);
     }
 }

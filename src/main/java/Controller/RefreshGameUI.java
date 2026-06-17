@@ -5,4 +5,5 @@ public interface RefreshGameUI {
     void setPauseMenuVisible(boolean visible);
     void setSettingsMenuVisible(boolean visible);
     void setPauseMenuOverlayVisible(boolean visible);
+    void setGameOverMenuVisible(boolean visible);
 }

@@ -42,6 +42,13 @@ public class Style {
                     "-fx-background-color: #444444;" +
                     "-fx-cursor: hand;";
 
+    public static final String gameOverMenuStyle =
+            "-fx-font-family: 'Comic Sans MS';" +
+                    "-fx-font-size: 20px;" +
+                    "-fx-font-weight: bold;" +
+                    "-fx-background-color: #444444;" +
+                    "-fx-cursor: hand;";
+
     public static String baseGridStyleWithBorder = BASE_GRID_STYLE + DEFAULT_BORDER_STYLE;
     public static String emptyGridCellStyle = BASE_GRID_STYLE + DEFAULT_BORDER_STYLE;
 

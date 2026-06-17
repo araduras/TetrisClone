@@ -1,4 +1,4 @@
-package View;
+package View.Menus;
 
 import Util.Util;
 import View.Utils.Style;
@@ -17,9 +17,9 @@ public class SettingsMenu {
     Button backBtn;
     VBox musicVolumeColumn;
     VBox soundEffectVolumeColumn;
-    VBox settingsMenu;
+    public VBox settingsMenu;
 
-    SettingsMenu
+   public SettingsMenu
             (
                     Consumer<Double> onMusicVolumeAdjust,
                     Consumer<Double> onSoundEffectVolumeAdjust,
