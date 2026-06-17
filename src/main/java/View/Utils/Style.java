@@ -1,4 +1,4 @@
-package View;
+package View.Utils;
 
 public class Style {
     //Shapes

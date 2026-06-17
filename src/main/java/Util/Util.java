@@ -1,10 +1,9 @@
 package Util;
 
-import View.Style;
+import View.Utils.Style;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import org.jetbrains.annotations.NotNull;
 
 public class Util {
     static final int defaultSliderWidth = 500;

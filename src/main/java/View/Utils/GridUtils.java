@@ -1,7 +1,6 @@
 package View.Utils;
 
 import Model.Tetromino;
-import View.Style;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 

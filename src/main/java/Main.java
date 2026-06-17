@@ -1,9 +1,9 @@
-import View.Tetris;
+import View.MainGame;
 
 public class Main {
 
         public static void main(String[] args) {
-            Tetris.main(args);
+            MainGame.main(args);
         }
     }
 

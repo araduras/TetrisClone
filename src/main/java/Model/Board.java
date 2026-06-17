@@ -6,23 +6,27 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static Model.Sizes.BOARD_X_SIZE;
-import static Model.Sizes.BOARD_Y_SIZE;
+
 
 
 public class Board {
-
+    public static final int BOARD_Y_SIZE = 20;
+    public static final int BOARD_X_SIZE = 10;
     public static final int STARTY = 0;
     public static final int STARTX = 4;
-    int rowsCleared = 0;
-    int level = 0;
+    final int maxLockDelayResetCount = 15;
+    private int totalRowsCleared = 0;
+
+    private int level = 0;
+    public int rowsClearedWithHardDrop = 0;
+    public int pieceMovedDownByOneScoreTracker = 0;
     private int rotationState = 2;
     public int currentY;
     public int currentX;
     public Tetromino currentPiece;
     public int[][] currentPieceMatrix;
     public boolean isGameOver = false;
-    boolean currentPieceHoldable = true;
+    public boolean currentPieceHoldable = true;
     boolean isFirstPieceOfTheGame;
     public ArrayList<Tetromino> holdPieceList = new ArrayList<>();
     ArrayList<Tetromino> randomPieces = Arrays.stream(Tetromino.values())
@@ -89,7 +93,8 @@ public class Board {
         return getBoardElement(y, x).name().equals("EMPTY");
     }
 
-    public void rowClear() {
+    public int rowClear() {
+        int rowsCleared = 0;
         for (int i = board.length - 1; i >= 0; i--) {
             if (isRowFull(i)) {
                 for (int j = 0; j < board[0].length; j++) {
@@ -104,24 +109,34 @@ public class Board {
                     }
                 }
                 rowsCleared++;
+                totalRowsCleared++;
                 i++;
             }
         }
-        if (rowsCleared > 0 && rowsCleared/10 > level ) {
+        if (totalRowsCleared > 0 && totalRowsCleared /10 > level) {
             level++;
+        }
+
+        return rowsCleared;
+    }
+
+    public boolean movePieceDownByOne(boolean pieceCanMoveDownByOne) {
+        if (!pieceCanMoveDownByOne) {
+            changeCurrentPieceY(1);
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public void movePieceDownByOneUserInput(boolean pieceCanMoveDownByOne) {
+        if (!pieceCanMoveDownByOne) {
+            changeCurrentPieceY(1);
+            pieceMovedDownByOneScoreTracker++;
         }
     }
 
-    public void movePieceDown() {
-        if (!pieceReachedBottomOrOtherPiece()) {
-            changeCurrentPieceY(1);
-        } else {
-            lockPieceToBoard();
-            rowClear();
-            currentPieceHoldable = true;
-            newPieceSpawnLoop();
-        }
-    }
+
+
 
     private boolean pieceCanBeMovedLeft(int @NotNull [][] pieceToBeMovedLeft) {
         for (int i = 0; i < pieceToBeMovedLeft.length; i++) {
@@ -182,29 +197,53 @@ public class Board {
         return true;
     }
 
-    public void DEFAULT_MOVE_PIECE_LEFT() {
+    public boolean DEFAULT_MOVE_PIECE_LEFT() {
         if (!pieceReachedBottomOrOtherPiece()
                 && pieceCanBeMovedLeft(currentPieceMatrix)) {
             changeCurrentPieceX(-1);
-
+            return true;
         }
+        else return false;
     }
 
-    public void DEFAULT_MOVE_PIECE_RIGHT() {
+    public boolean DEFAULT_MOVE_PIECE_RIGHT() {
         if (!pieceReachedBottomOrOtherPiece()
                 && pieceCanBeMovedRight(currentPieceMatrix)) {
             changeCurrentPieceX(+1);
+            return true;
         }
+        else return false;
     }
 
-    public void hardDrop() {
+    public boolean lockDelayedPieceLeftMovement(boolean isLockDelayed){
+        if (isLockDelayed
+                && pieceCanBeMovedLeft(currentPieceMatrix)){
+            changeCurrentPieceX(-1);
+            return true;
+        }
+       else return false;
+    }
+
+    public boolean lockDelayedPieceRightMovement(boolean isLockDelayed){
+        if (isLockDelayed
+                && pieceCanBeMovedRight(currentPieceMatrix)){
+            changeCurrentPieceX(+1);
+            return true;
+        }
+        else return false;
+    }
+
+    public int hardDrop() {
+        int RowsTraveledWhileHardDrop = 0;
         while (!pieceReachedBottomOrOtherPiece()) {
             changeCurrentPieceY(1);
+            RowsTraveledWhileHardDrop++;
         }
         lockPieceToBoard();
-        rowClear();
+        rowsClearedWithHardDrop = rowClear();
         currentPieceHoldable = true;
         newPieceSpawnLoop();
+        return RowsTraveledWhileHardDrop;
     }
 
 
@@ -292,7 +331,10 @@ public class Board {
         return true;
     }
 
-    private boolean pieceReachedBottomOrOtherPiece() {
+    /**
+     * Returns false if downwards movement is possible
+     */
+    public boolean pieceReachedBottomOrOtherPiece() {
         int matrixSize = currentPieceMatrix.length;
         for (int i = 0; i < matrixSize; i++) {
             for (int j = 0; j < currentPieceMatrix[0].length; j++) {
@@ -308,7 +350,7 @@ public class Board {
         return false;
     }
 
-    private void lockPieceToBoard() {
+    public void lockPieceToBoard() {
         for (int i = 0; i < currentPieceMatrix.length; i++) {
             for (int j = 0; j < currentPieceMatrix[0].length; j++) {
                 if (currentPieceMatrix[i][j] == 1) {
@@ -336,10 +378,12 @@ public class Board {
         } else return false;
     }
 
-    private void newPieceSpawnLoop() {
+    public void newPieceSpawnLoop() {
         randomPiecesListHandler();
         currentPieceMatrix = currentPiece.getShapeMatrix(0);
         rotationState = 0;
+        rowsClearedWithHardDrop = 0;
+        pieceMovedDownByOneScoreTracker = 0;
         currentY = STARTY;
         currentX = STARTX;
         isGameOver();
@@ -365,16 +409,18 @@ public class Board {
             }
         }
     }
-
-
+    
     public void boardClear() {
         isGameOver = false;
         isFirstPieceOfTheGame = true;
         boardInit();
         newPieceSpawnLoop();
     }
-
     public int getLevel() {
         return level;
+    }
+
+    public int getMaxLockDelayResetCount(){
+        return maxLockDelayResetCount;
     }
 }

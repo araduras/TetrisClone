@@ -3,9 +3,10 @@ package View;
 import Controller.GameController;
 import Controller.RefreshGameUI;
 import Model.Board;
-import Model.Sizes;
+import View.Utils.Sizes;
 import Util.Util;
 import View.Utils.GridUtils;
+import View.Utils.Style;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -20,8 +21,11 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 
-public class Tetris extends Application implements RefreshGameUI {
+public class MainGame extends Application implements RefreshGameUI {
     Label levelLabel;
+    Label currentLevelLabel;
+    Label scoreLabel;
+    Label currentScoreLabel;
     static int DEFAULT_IN_GAME_BOX_SPACING = 10;
     static int DEFAULT_IN_GAME_COLUMN_SPACING = 1;
     GameController controller;
@@ -111,6 +115,7 @@ public class Tetris extends Application implements RefreshGameUI {
         gameGridSetup();
 
         gameStackPane.getChildren().addAll(gridPane, pauseMenuStackPane);
+        controller.startGameLoop();
     }
 
     private void mainLayoutSetup(VBox leftColumn, VBox rightColumn) {
@@ -133,13 +138,36 @@ public class Tetris extends Application implements RefreshGameUI {
         leftColumn.setPrefSize(Sizes.idealColumnWidth, Sizes.idealColumHeight);
         leftColumn.setMaxSize(Sizes.idealColumnWidth, Sizes.idealColumHeight);
 
-        Label holdLabel = new Label("HOLD");
-         levelLabel = new Label(String.valueOf(controller.getLevel()));
 
+        Label holdLabel = new Label("HOLD");
         holdLabel.setStyle(Style.LARGE_TEXT_STYLE);
         holdLabel.setAlignment(Pos.CENTER);
 
-        leftColumn.getChildren().addAll(holdLabel, holdPieceBox, scoreBox, levelLabel);
+        levelLabel = new Label("Level");
+        levelLabel.setStyle(Style.LARGE_TEXT_STYLE);
+        levelLabel.setAlignment(Pos.CENTER);
+
+        currentLevelLabel = new Label(String.valueOf(controller.getLevel()));
+        currentLevelLabel.setStyle(Style.LARGE_TEXT_STYLE);
+        currentLevelLabel.setAlignment(Pos.CENTER);
+
+        scoreLabel = new Label("Score");
+        scoreLabel.setStyle(Style.LARGE_TEXT_STYLE);
+        scoreLabel.setAlignment(Pos.CENTER);
+
+        currentScoreLabel = new Label("0");
+        currentScoreLabel.setStyle(Style.LARGE_TEXT_STYLE);
+        currentScoreLabel.setAlignment(Pos.CENTER);
+        currentScoreLabel.setText(String.valueOf(controller.getScore()));
+
+        leftColumn.getChildren().addAll(
+                holdLabel,
+                holdPieceBox,
+                scoreBox,
+                levelLabel,
+                currentLevelLabel,
+                scoreLabel,
+                currentScoreLabel);
     }
 
     private void rightColumnSetup() {
@@ -157,8 +185,6 @@ public class Tetris extends Application implements RefreshGameUI {
 
         rightColumn.getChildren().addAll(nextLabel, nextPieceBox);
     }
-
-
     private void boxesRightSideSetup() {
         nextPieceBox.setMaxSize(100, 100);
         nextPieceBoxGridPane = new GridPane();
@@ -174,7 +200,6 @@ public class Tetris extends Application implements RefreshGameUI {
         nextPieceBox.setAlignment(Pos.CENTER_LEFT);
         nextPieceBox.getChildren().add(nextPieceBoxGridPane);
     }
-
     private void boxesLeftSideSetup() {
         holdPieceBox.setMaxSize(100, 100);
         holdPieceBoxGridPane = new GridPane();
@@ -190,27 +215,31 @@ public class Tetris extends Application implements RefreshGameUI {
         holdPieceBox.getChildren().add(holdPieceBoxGridPane);
 
     }
-
     private void gameGridSetup() {
         boardGridCells =
                 GridUtils.gridBuilder(
                         gridPane,
                         BOARD_Y_SIZE,
                         BOARD_X_SIZE,
-                        30,
-                        30,
+                        50,
+                        50,
                         Style.baseGridStyleWithBorder
                 );
         gridPane.setAlignment(Pos.CENTER);
         gridPane.setStyle(Style.DEFAULT_GRAY_COLOR);
     }
-
-
     public void refreshUI() {
         //Board
         for (int y = 0; y < BOARD_Y_SIZE; y++) {
             for (int x = 0; x < BOARD_X_SIZE; x++) {
-                boardGridCells[y][x].setStyle(controller.getBoardElement(y, x).getStyle());
+                if (!controller.getBoardElement(y,x).name().equals("EMPTY")){
+                    boardGridCells[y][x].setStyle(controller.getBoardElement(y, x).getStyle());
+                }
+                else{
+                    boardGridCells[y][x].setStyle(Style.baseGridStyleWithBorder);
+
+                }
+
             }
         }
         //Hold
@@ -249,9 +278,11 @@ public class Tetris extends Application implements RefreshGameUI {
                     nextPieceBoxGridOffsetX,
                     controller.getNextPieceInHold(i));
         }
-        levelLabel.setText(String.valueOf(controller.getLevel()));
-        levelLabel.setStyle(Style.LARGE_TEXT_STYLE);
-        levelLabel.setAlignment(Pos.CENTER);
+        //Level
+        currentLevelLabel.setText(String.valueOf(controller.getLevel()));
+        //Score
+        currentScoreLabel.setText(String.valueOf(controller.getScore()));
+
     }
 
     @Override

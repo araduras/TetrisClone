@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.Board;
+import Model.Score;
 import Model.Tetromino;
 import Model.Time;
 import Util.Sounds;
@@ -9,18 +10,21 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.input.KeyEvent;
 
 public class GameController {
+    int currentScore = 0;
     long lastUpdate = 0;
     public static GameState currentGameState = GameState.DEFAULT;
     public AnimationTimer animationTimer;
     public static Sounds gameMusic = new Sounds();
-
+    int lockDelayResetCount = 0;
+    boolean lockIsDelayed = false;
     public static Time gameSpeed = new Time();
     int level = 0;
+    Score score = new Score();
     long CURRENT_GAME_SPEED = gameSpeed.gameSpeed(level);
     Board board;
     RefreshGameUI ui;
 
-
+    long lockDelay = 0;
     public GameController(Board board, RefreshGameUI ui) {
         setGameState(GameState.In_Game);
 
@@ -33,63 +37,96 @@ public class GameController {
             public void handle(long now) {
                 long timeSinceLastUpdate = now - lastUpdate;
                 if (timeSinceLastUpdate >= CURRENT_GAME_SPEED) {
-                    board.movePieceDown();
+                    if (board.movePieceDownByOne(board.pieceReachedBottomOrOtherPiece())) {
+                        ui.refreshUI();
+                        lockDelay = 0;
 
-                    ui.refreshUI();
+                    } else {
+                        if (lockDelay == 0) {
+                        lockDelay = now + gameSpeed.getLockDelay(level);
+                        lockDelayResetCount = 0;
+                        lockIsDelayed = true;
+                        }
+                    }
+
                     if (board.isGameOver) {
                         this.stop();
                     }
-                    if (board.getLevel()>=level){
+                    if (board.getLevel() >= level) {
                         level = board.getLevel();
                         CURRENT_GAME_SPEED = gameSpeed.gameSpeed(level);
                     }
                     lastUpdate = now;
+
+                }
+                if (lockDelay!= 0 && lockDelay <= now) {
+                    board.lockPieceToBoard();
+                    currentScore += score.getScoreForRowClear(board.rowClear(),level);
+                    board.currentPieceHoldable = true;
+                    board.newPieceSpawnLoop();
+                    lockDelayResetCount = 0;
+                    lockDelay = 0;
+                    lockIsDelayed = false;
+                    ui.refreshUI();
                 }
             }
         };
-        animationTimer.start();
         gameMusic.playMusic(Sounds.DEFAULT_THEME);
         setGameState(GameState.In_Game);
     }
-
+    public void startGameLoop(){this.animationTimer.start();}
     public void handleKeyPress(KeyEvent event) {
-
+        boolean actionSuccessful = false;
         switch (event.getCode()) {
             case LEFT -> {
-                if (getGameState() == GameState.In_Game) {
-                    board.DEFAULT_MOVE_PIECE_LEFT();
+                if (getGameState() == GameState.In_Game
+                        && board.DEFAULT_MOVE_PIECE_LEFT()
+                        || board.lockDelayedPieceLeftMovement(lockIsDelayed)) {
+                    actionSuccessful = true;
                 }
             }
-
-
             case RIGHT -> {
-                if (getGameState() == GameState.In_Game) {
-                    board.DEFAULT_MOVE_PIECE_RIGHT();
+                if (getGameState() == GameState.In_Game
+                        && board.DEFAULT_MOVE_PIECE_RIGHT()
+                        || board.lockDelayedPieceRightMovement(lockIsDelayed)) {
+                    actionSuccessful = true;
+
                 }
             }
-
             case UP -> {
                 if (getGameState() == GameState.In_Game && board.rotatePiece()) {
                     gameMusic.playSoundEffect_Rotate();
+                    actionSuccessful = true;
                 }
             }
             case DOWN -> {
                 if (getGameState() == GameState.In_Game) {
-                    board.movePieceDown();
-                }
+                   if( board.movePieceDownByOne(board.pieceReachedBottomOrOtherPiece())){
+                    currentScore += score.getScoreForDownwardMove(1,level);
+                }}
             }
-            case SPACE -> board.hardDrop();
+            case SPACE -> {
+                currentScore += score.getScoreForHardDrop(board.rowsClearedWithHardDrop,level);
+                currentScore += score.getScoreForHardDrop(board.hardDrop(), level);
+            }
+
+
             case C -> {
                 if (board.holdPiece()) {
                     gameMusic.playSoundEffect_Rotate();
                 }
 
             }
-
-
             case ESCAPE -> escapeHandler();
-
         }
+        if (lockDelay != 0
+                && actionSuccessful
+                && lockDelayResetCount < board.getMaxLockDelayResetCount()){
+        lockDelay = gameSpeed.getLockDelay(level)+System.nanoTime();
+        lockDelayResetCount++;
+        ui.refreshUI();
+        }
+
         ui.refreshUI();
     }
 
@@ -172,7 +209,8 @@ public class GameController {
     public Tetromino getPieceInHold() {
         return board.holdPieceList.getFirst();
     }
-    public Tetromino getNextPieceInHold(int nextPiece){
+
+    public Tetromino getNextPieceInHold(int nextPiece) {
         return board.upComingPieces.get(nextPiece);
     }
 
@@ -202,7 +240,8 @@ public class GameController {
     public int getHoldPieceSize() {
         return board.holdPieceList.getFirst().getShapeMatrix()[0].length;
     }
-    public int getNextPieceSize(int nextPiece){
+
+    public int getNextPieceSize(int nextPiece) {
         return board.upComingPieces.get(nextPiece).getShapeMatrix().length;
     }
 
@@ -214,7 +253,8 @@ public class GameController {
             return holdPieceMatrix[y][x] == 1;
         } else return false;
     }
-    public boolean getNextPieceMatrixAt(int y, int x, int nextPiece){
+
+    public boolean getNextPieceMatrixAt(int y, int x, int nextPiece) {
         if (y < board.upComingPieces.get(nextPiece).getShapeMatrix()[0].length) {
             int[][] nextPieceMatrix = board.upComingPieces
                     .get(nextPiece)
@@ -223,7 +263,10 @@ public class GameController {
         } else return false;
     }
 
-    public int getLevel(){
-       return board.getLevel();
+    public int getLevel() {
+        return board.getLevel();
+    }
+    public int getScore(){
+        return currentScore;
     }
 }
