@@ -44,9 +44,13 @@
     </dependencies>
 
     <build>
-        <sourceDirectory>src</sourceDirectory>
+        <sourceDirectory>src/main/java</sourceDirectory>
 
         <plugins>
+
+
+
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -54,6 +58,16 @@
                 <configuration>
                     <source>21</source>
                     <target>21</target>
+                </configuration>
+            </plugin>
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/libs</outputDirectory>
                 </configuration>
             </plugin>
 
@@ -68,6 +82,7 @@
                     </options>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.panteleyev</groupId>
                 <artifactId>jpackage-maven-plugin</artifactId>
@@ -75,15 +90,29 @@
                 <configuration>
                     <name>XGrid</name>
                     <type>APP_IMAGE</type>
-
                     <mainClass>Main</mainClass>
-                    <mainJar>${project.build.finalName}.jar</mainJar>
+                    <mainJar>XGrid-1.0.0.jar</mainJar>
+                    <input>${project.build.directory}/libs</input>
                     <destination>${project.build.directory}/dist</destination>
-
-                    <input>${project.build.directory}</input>
-
                     <vendor>Developer</vendor>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/libs</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
