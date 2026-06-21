@@ -20,7 +20,7 @@ public class Sounds {
     public Sounds(){
         setMusicVolume(DEFAULT_MUSIC_VOLUME);
         setSoundEffectsVolume(DEFAULT_SOUND_EFFECTS_VOLUME);
-        rotateSoundEffectFilename = "vine-boom.mp3";
+        rotateSoundEffectFilename = "rotate_fromAI.mp3";
         soundEffectsSetter();
     }
 

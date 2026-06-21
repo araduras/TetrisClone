@@ -39,7 +39,6 @@ public class GameController {
                     this.stop();
                     setGameState(GameState.Game_Over);
                     ui.setGameOverMenuVisible(true);
-
                 }
                 long timeSinceLastUpdate = now - lastUpdate;
                 if (timeSinceLastUpdate >= CURRENT_GAME_SPEED) {
@@ -80,6 +79,10 @@ public class GameController {
     }
     public void startGameLoop(){this.animationTimer.start();}
     public void handleKeyPress(KeyEvent event) {
+        if (getGameState() == GameState.Game_Over){
+            event.consume();
+            return;
+        }
         boolean actionSuccessful = false;
         switch (event.getCode()) {
             case LEFT -> {
@@ -101,6 +104,7 @@ public class GameController {
                 if (getGameState() == GameState.In_Game && board.rotatePiece()) {
                     gameMusic.playSoundEffect_Rotate();
                     actionSuccessful = true;
+
                 }
             }
             case DOWN -> {
@@ -112,6 +116,7 @@ public class GameController {
             case SPACE -> {
                 currentScore += score.getScoreForHardDrop(board.rowsClearedWithHardDrop,level);
                 currentScore += score.getScoreForHardDrop(board.hardDrop(), level);
+
             }
 
 
@@ -159,7 +164,9 @@ public class GameController {
     }
 
     public void restartBoard() {
-        this.board.boardClear();
+        this.board.boardClearAndRestart();
+        setLevel(0);
+        currentScore = 0;
         animationTimer.stop();
         animationTimer.start();
         ui.refreshUI();
@@ -276,6 +283,9 @@ public class GameController {
 
     public int getLevel() {
         return board.getLevel();
+    }
+    public void setLevel(int level) {
+        board.setLevel(level);
     }
     public int getScore(){
         return currentScore;

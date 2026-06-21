@@ -61,7 +61,7 @@ public class Board {
         }
     }
 
-    private void randomPiecesListHandler() {
+    private void fillUpComingPiecesListWithRandomPieces() {
         if (upComingPieces.size() <= 5) {
             for (int i = 0; i < 2; i++) {
                 Collections.shuffle(randomPieces);
@@ -379,7 +379,7 @@ public class Board {
     }
 
     public void newPieceSpawnLoop() {
-        randomPiecesListHandler();
+        fillUpComingPiecesListWithRandomPieces();
         currentPieceMatrix = currentPiece.getShapeMatrix(0);
         rotationState = 0;
         rowsClearedWithHardDrop = 0;
@@ -410,15 +410,21 @@ public class Board {
         }
     }
     
-    public void boardClear() {
+    public void boardClearAndRestart() {
         isGameOver = false;
         isFirstPieceOfTheGame = true;
+        upComingPieces.clear();
+        fillUpComingPiecesListWithRandomPieces();
         boardInit();
         newPieceSpawnLoop();
     }
     public int getLevel() {
         return level;
     }
+    public void setLevel(int levelToSet) {
+        level = levelToSet;
+    }
+
 
     public int getMaxLockDelayResetCount(){
         return maxLockDelayResetCount;
