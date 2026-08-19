@@ -249,8 +249,19 @@ public class GameController {
             return board.getBoardElement(y, x);
         }
     }
+    public int getGhostPieceY(){
+        return board.getGhostPieceY();
+    }
+    public int getGhostPieceX(){
+        return board.getGhostPieceX();
+    }
 
-
+    public int getGhostPieceSize(){
+        return board.currentPieceMatrix.length;
+    }
+    public Tetromino getGhostPieceTetromino(){
+        return board.currentPiece;
+    }
     public boolean isHoldListNull() {
         return board.holdPieceList.isEmpty();
     }
@@ -258,7 +269,6 @@ public class GameController {
     public int getHoldPieceSize() {
         return board.holdPieceList.getFirst().getShapeMatrix()[0].length;
     }
-
     public int getNextPieceSize(int nextPiece) {
         return board.upComingPieces.get(nextPiece).getShapeMatrix().length;
     }
@@ -271,7 +281,6 @@ public class GameController {
             return holdPieceMatrix[y][x] == 1;
         } else return false;
     }
-
     public boolean getNextPieceMatrixAt(int y, int x, int nextPiece) {
         if (y < board.upComingPieces.get(nextPiece).getShapeMatrix()[0].length) {
             int[][] nextPieceMatrix = board.upComingPieces
@@ -280,7 +289,15 @@ public class GameController {
             return nextPieceMatrix[y][x] == 1;
         } else return false;
     }
-
+    /*
+    Returns true in CurrentPieceMatrix if value is 1 at the given y,x
+     */
+    public boolean getCurrentPieceMatrixAt(int y, int x){
+        return board.currentPieceMatrix[y][x]==1;
+    }
+    public int getCurrentPieceX(){
+        return  board.currentX;
+    }
     public int getLevel() {
         return board.getLevel();
     }

@@ -6,9 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
-
-
 public class Board {
     public static final int BOARD_Y_SIZE = 20;
     public static final int BOARD_X_SIZE = 10;
@@ -56,7 +53,8 @@ public class Board {
     public void boardInit() {
         for (int y = 0; y < board.length; y++) {
             for (int x = 0; x < board[y].length; x++) {
-                board[y][x] = Tetromino.EMPTY;
+                setBoardElement(y,x, Tetromino.EMPTY);
+
             }
         }
     }
@@ -70,14 +68,6 @@ public class Board {
         }
         currentPiece = upComingPieces.getFirst();
         upComingPieces.remove(upComingPieces.getFirst());
-    }
-
-    public void changeCurrentPieceY(int Y) {
-        currentY += Y;
-    }
-
-    public void changeCurrentPieceX(int X) {
-        currentX += X;
     }
 
     private boolean isRowFull(int row) {
@@ -120,6 +110,18 @@ public class Board {
         return rowsCleared;
     }
 
+    public int getGhostPieceY(){
+        int currentGhostPieceY = currentY;
+        while (!ghostPieceReachedBottomOrOtherPiece(currentGhostPieceY)) {
+            currentGhostPieceY++;
+        }
+        return currentGhostPieceY;
+    }
+    public int getGhostPieceX(){
+        return currentX;
+    }
+
+    //Movement
     public boolean movePieceDownByOne(boolean pieceCanMoveDownByOne) {
         if (!pieceCanMoveDownByOne) {
             changeCurrentPieceY(1);
@@ -136,7 +138,13 @@ public class Board {
     }
 
 
+    public void changeCurrentPieceY(int Y) {
+        currentY += Y;
+    }
 
+    public void changeCurrentPieceX(int X) {
+        currentX += X;
+    }
 
     private boolean pieceCanBeMovedLeft(int @NotNull [][] pieceToBeMovedLeft) {
         for (int i = 0; i < pieceToBeMovedLeft.length; i++) {
@@ -246,7 +254,6 @@ public class Board {
         return RowsTraveledWhileHardDrop;
     }
 
-
     public boolean rotatePiece() {
         int nextState = (rotationState + 1) % 4;
         if (pieceCanBeRotated(currentPiece.getShapeMatrix(nextState))) {
@@ -349,6 +356,21 @@ public class Board {
         }
         return false;
     }
+    public boolean ghostPieceReachedBottomOrOtherPiece(int ghostPieceY) {
+        for (int i = 0; i < currentPieceMatrix.length; i++) {
+            for (int j = 0; j < currentPieceMatrix[0].length; j++) {
+                if (currentPieceMatrix[i][j] == 1) {
+                    if (ghostPieceY + i >= BOARD_Y_SIZE - 1
+                            || !getBoardElement(ghostPieceY + i + 1, currentX + j).name().equals("EMPTY")
+                    ) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
 
     public void lockPieceToBoard() {
         for (int i = 0; i < currentPieceMatrix.length; i++) {

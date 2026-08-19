@@ -221,9 +221,12 @@ public enum Tetromino {
         return this.shapeMatrix;
     }
 
-
+/*
+* Example
+*  "-fx-fill: #333333; "-fx-stroke: #000000; "-fx-stroke: #000000; -fx-stroke-width: 0.5; -fx-stroke-type: inside;"
+* */
     public String getStyle() {
-        return "-fx-fill: " + this.colorStyle + "; " + Style.DEFAULT_BORDER_STYLE;
+        return  this.colorStyle + "; " + Style.DEFAULT_BORDER_STYLE;
     }
 
 }

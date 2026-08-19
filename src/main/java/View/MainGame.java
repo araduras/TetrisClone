@@ -254,6 +254,7 @@ public class MainGame extends Application implements RefreshGameUI {
             for (int x = 0; x < BOARD_X_SIZE; x++) {
                 if (!controller.getBoardElement(y,x).name().equals("EMPTY")){
                     boardGridCells[y][x].setStyle(controller.getBoardElement(y, x).getStyle());
+
                 }
                 else{
                     boardGridCells[y][x].setStyle(Style.baseGridStyleWithBorder);
@@ -262,6 +263,10 @@ public class MainGame extends Application implements RefreshGameUI {
 
             }
         }
+
+
+
+
         //Hold
         int holdGridOffsetY = 2;
         int holdGridOffsetX = 2;
@@ -303,7 +308,25 @@ public class MainGame extends Application implements RefreshGameUI {
         //Score
         currentScoreLabel.setText(String.valueOf(controller.getScore()));
 
-    }
+
+        //Ghostpiece
+        for (int i = 0; i < controller.getGhostPieceSize(); i++) {
+            for (int j = 0; j < controller.getGhostPieceSize(); j++) {
+                if (controller.getCurrentPieceMatrixAt(i,j)
+
+                ){
+
+                    boardGridCells[controller.getGhostPieceY()+i][controller.getGhostPieceX()+j]
+                            .setStyle(Style.toGhostStyle(controller.getGhostPieceTetromino().getStyle()
+                                    , Style.DEFAULT_OPACITY));
+                }
+
+            }
+        }
+
+        }
+
+
 
     @Override
     public void setPauseMenuVisible(boolean visible) {
